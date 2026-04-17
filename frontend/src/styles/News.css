@@ -1,0 +1,98 @@
+/* Contenedor principal de submissions */
+.submissions-container {
+    width: 100%;
+    margin: 0 auto;
+    background-color: #f6f6ef;
+    padding: 5px; /* Añade un pequeño padding alrededor */
+    margin-top: 80px; /* Afegeix espai per sota de la capçalera */
+    margin-left: 20px; 
+}
+
+/* Cada noticia individual */
+.container {
+    border-bottom: 1px solid #ddd;
+    padding: 20px 0; /* Espaciado vertical grande */
+}
+
+.news-item {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Espaciado mayor entre bloques */
+}
+
+.news-content {
+    display: flex;
+    align-items: center; /* Centra verticalmente los elementos */
+    gap: 20px; /* Espacio entre el botón y el título */
+}
+
+.vote-button {
+    background-color: #ff6600;
+    color: white;
+    border: none;
+    padding: 10px 15px; /* Botones más grandes */
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+}
+
+.vote-button.voted {
+    background-color: #444;
+}
+
+.vote-button:hover {
+    background-color: #e55e00;
+}
+
+.title-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Espacio vertical entre el título y el shortened URL */
+}
+
+.news-title {
+    font-size: 18px; /* Títulos más grandes */
+    font-weight: bold;
+    text-decoration: none;
+    color: #000;
+    margin-bottom: 10px; /* Espacio extra debajo del título */
+}
+
+.news-title:hover {
+    text-decoration: underline;
+}
+
+.shortened-url a {
+    color: #828282;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.author-points-container {
+    font-size: 14px; /* Tamaño de fuente más grande */
+    color: #828282;
+    /*display: flex;
+    justify-content: space-between;
+    align-items: center;*/
+    padding-top: 10px; /* Espaciado vertical extra */
+}
+
+.points {
+    font-weight: bold;
+    color: #000;
+}
+
+.loading,
+.error {
+    text-align: center;
+    margin-top: 20px;
+    color: #ff6600;
+    font-size: 16px;
+}
+
+.news-content,
+.author-points-container {
+    padding-left: 20px; /* Espaciado interno para estirar el diseño */
+    padding-right: 20px;
+}

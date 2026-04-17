@@ -1,0 +1,309 @@
+{% load socialaccount %}
+<!DOCTYPE html>
+<html lang="en" op="news">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Comentarios</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f6f6ef;
+        }
+        .main-container {
+            width: 95%;
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #f6f6ef;
+        }
+
+        .header {
+            background-color: #ff6600;
+            padding: 5px 0;
+            border-bottom: 1px solid #e2e2e2;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header .pagetop {
+            color: white;
+            padding: 0 10px;
+        }
+        .header a {
+            color: white;
+            margin-right: 10px;
+            text-decoration: none;
+        }
+        .header .hnname a {
+            font-weight: bold;
+            color: white;
+        }
+        .header .search-form {
+            margin-left: 0px;
+        }
+        .header .search-form input {
+            padding: 5px;
+            font-size: 14px;
+            border-radius: 4px;
+        }
+        .header .search-form button {
+            padding: 6px 12px;
+            font-size: 14px;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .header .user-info a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid #e2e2e2;
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .comment-container {
+            margin-bottom: 15px;
+        }
+
+        .comment {
+            background-color: #fff;
+            padding: 15px;
+            border: 1px solid #e2e2e2;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+        }
+
+        .reply {
+            margin-left: 30px;
+            background-color: #f6f6ef;
+        }
+
+        .author {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .content {
+            margin-bottom: 10px;
+        }
+        .news-item a {
+            color: #000;
+            text-decoration: none;
+        }
+        .news-item a:hover {
+            text-decoration: underline;
+        }
+        .text-gray {
+            color: #828282;
+            text-decoration: none;
+        }
+        .no-comments {
+            margin-top: 10px; 
+        }
+        .orange-asterisk {
+            color: #ff6600;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        .text {
+            margin-top: 10px;
+            margin-left:15px;
+        }   
+        .time {
+            color: #828282;
+            font-size: 12px;
+        }
+        .vote-button {
+            background-color: #ff6600;
+            color: white;
+            border: none;
+            padding: 3px 8px;
+            font-size: 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-right: 5px;
+        }
+        .text-gray {
+            color: #828282;
+            text-decoration: none;
+        }
+        .orange-asterisk {
+            color: #ff6600;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        .text {
+            margin-top: 10px;
+        }
+        .no-comments {
+            margin-top: 10px;
+        }
+        .error {
+            color: red;         
+            font-size: 0.9em; 
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <div class="header">
+            <span class="pagetop">
+                <b class="hnname">
+                    <a href="/news">Hacker News</a>
+                </b>
+                <a href="/newest">new</a>
+                <a href="/threads">threads</a>
+                <a href="/comments">comments</a>
+                <a href="/ask">ask</a>
+                <a href="/submissions" rel="nofollow">submit</a>
+            </span>
+
+            <!-- Buscador -->
+            <span class="search-form">
+                <form method="get" action="{% url 'newest' %}">
+                    <input type="text" name="query" placeholder="Busca por título" value="{{ query }}">
+                    <button type="submit">Buscar</button>
+                </form>
+            </span>
+
+            
+            <!-- Usuario -->
+            <span class="user-info">
+                {% if user.is_authenticated %}
+                <div class="user-logout-container">
+                    <a href="{% url 'accounts:profile' %}">{{ user.username }} ({{ karma }})</a>
+                    <a href="#" onclick="document.getElementById('logout-form').submit(); return false;">Logout</a>
+                    <form id="logout-form" method="post" action="{% url 'account_logout' %}" style="display: none;">
+                        {% csrf_token %}
+                    </form>
+                </div>
+                {% else %}
+                <a href="{% provider_login_url 'google' %}">Login with Google</a>
+                {% endif %}
+            </span>
+        </div>
+
+
+        <h2>Mis Comentarios:</h2>
+
+        {% if user.is_authenticated %}
+            {% for comment in user_comments %}
+            <div class="comment-container">
+                <div class="comment">
+                    <div class="news-item">
+                        <div class="news-item-header">
+                            {% if user.is_authenticated and user == comment.author %} 
+                                <span class="orange-asterisk">*</span>
+                            {% else %}
+                                {% if user.is_authenticated %}
+                                <form action="{% url 'vote_comment' comment.id %}" method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.path }}">
+                            {% if comment.has_voted %}
+                                <button type="submit" class="vote-button">Unvote</button>
+                            {% else %}
+                                <button type="submit" class="vote-button">Vote</button>
+                            {% endif %}
+                        </form>
+                    {% else %}
+                    <form action="{% provider_login_url 'google' %}" method="get" style="display: inline;">
+                        <button type="submit" class="vote-button">Vote</button>
+                    </form>
+                    {% endif %}
+                    {% endif %}
+                    {% if user.is_authenticated and user == comment.author %}
+                        <a href="{% url 'accounts:profile' %}">{{ comment.author }}</a>
+                    {% else %}
+                        <a href="{% url 'accounts:author_profile' comment.author %}">{{ comment.author }}</a>
+                    {% endif %}                    
+                    <a href="{% url 'comment_detail' pk=comment.pk %}">{{ comment.time_ago }}</a>
+                    <span class="text-gray">| on:</span> 
+                    <a href="{% url 'submission_detail' pk=comment.submission.pk %}">{{ comment.submission.title }}</a>
+                    {% if user.is_authenticated and user == comment.author %}      
+                        <span class="text-gray">|</span> 
+                        <a href="{% url 'edit_comment' pk=comment.pk %}">edit</a> 
+                        <span class="text-gray">|</span> 
+                        <a href="{% url 'delete_comment' pk=comment.pk %}">delete</a>
+                    {% endif %}
+        </div>
+        <div class="text">
+            {{ comment.text }}
+        </div>
+    </div>
+                    {% for reply in comment.replies.all %}
+                    <div class="comment-container reply">
+                        <div class="comment">
+                            <div class="news-item">
+                                <div class="news-item-header">
+                                    {% if user.is_authenticated and user == reply.author %} 
+                                        <span class="orange-asterisk">*</span>
+                                    {% else %}
+                                        {% if user.is_authenticated %}
+                                            <form action="{% url 'vote_comment' comment.id %}" method="post" style="display: inline;">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="next" value="{{ request.path }}">
+                                                {% if reply.has_voted %}
+                                                    <button type="submit" class="vote-button">Unvote</button>
+                                                {% else %}
+                                                    <button type="submit" class="vote-button">Vote</button>
+                                                {% endif %}
+                                            </form>
+                                        {% else %}
+                                            <form action="{% provider_login_url 'google' %}" method="get" style="display: inline;">
+                                                <button type="submit" class="vote-button">Vote</button>
+                                            </form>
+                                        {% endif %}
+                                    {% endif %}
+                                    {% if user.is_authenticated and user == reply.author %}
+                                        <a href="{% url 'accounts:profile' %}">{{ reply.author }}</a>
+                                    {% else %}
+                                        <a href="{% url 'accounts:author_profile' comment.author %}">{{ reply.author }}</a>
+                                    {% endif %}                    
+                                    <a href="{% url 'comment_detail' pk=comment.pk %}">{{ reply.time_ago }}</a>
+                                    <span class="text-gray">| on:</span> 
+                                    <a href="{% url 'submission_detail' pk=comment.submission.pk %}">{{ reply.submission.title }}</a>
+                                    {% if user.is_authenticated and user == reply.author %}      
+                                        <span class="text-gray">|</span> 
+                                        <a href="{% url 'edit_comment' pk=comment.pk %}">edit</a> 
+                                        <span class="text-gray">|</span> 
+                                        <a href="{% url 'delete_comment' pk=comment.pk %}">delete</a>
+                                    {% endif %}
+                                </div>
+                                <div class="text">
+                                    {{ reply.text }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% empty %}
+                <p>No has realizado ningún comentario aún.</p>
+            {% endfor %}
+        {% else %}
+            <p>Inicia sesión para ver tus comentarios.</p>
+        {% endif %}
+    </div>
+    <script>
+        function confirmLogout() {
+            if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
+                document.getElementById('logout-form').submit();
+            }
+        }
+    </script>
+</body>
+</html>

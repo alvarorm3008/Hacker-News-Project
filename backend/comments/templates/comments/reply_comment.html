@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reply to Comment</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f6f6ef;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            background-color: #fff;
+            border: 1px solid #e2e2e2;
+            padding: 20px;
+        }
+
+        .header {
+            padding: 10px;
+            background-color: #ff6600;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .comment-details {
+            color: #828282;
+            font-size: 12px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+        }
+
+        .comment-text {
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .reply-form {
+            margin-top: 20px;
+        }
+
+        .reply-form textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            border: 1px solid #e2e2e2;
+            resize: vertical;
+        }
+
+        .reply-form button {
+            background-color: #ff6600;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .reply-form button:hover {
+            background-color: #e55d00;
+        }
+
+        .guidelines {
+            color: #828282;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+
+        .guidelines a {
+            color: #828282;
+            text-decoration: none;
+        }
+
+        .guidelines a:hover {
+            text-decoration: underline;
+        }
+        .reply-form textarea {
+            width: 50%; /* Ajusta el ancho del campo de texto */
+            max-width: 600px; /* Ancho máximo del campo de texto */
+            display: block; /* Asegura que el textarea sea un bloque */
+            margin-bottom: 10px; /* Añade un margen inferior para separar el botón */
+        }
+        .reply-form button {
+            display: block; /* Asegura que el botón sea un bloque */
+        }
+        .comment-details a.submission-title {
+            color: #828282; /* Color del texto de la hora de creación */
+            text-decoration: none; /* Elimina el subrayado */
+        }
+        .comment-details a.submission-title:hover {
+            text-decoration: underline; /* Subraya el texto al pasar el ratón */
+        }
+        .add-comment-link {
+            color: white; /* Color blanco para el enlace */
+            text-decoration: none; /* Elimina el subrayado */
+        }
+        .add-comment-link:hover {
+            text-decoration: underline; /* Subraya el texto al pasar el ratón */
+        }
+        .author-info {
+            color: gray; /* Color gris para el nombre del autor y el time ago */
+        }
+        .author-info a {
+            color: gray; /* Color gris para los enlaces dentro de author-info */
+            text-decoration: none; /* Elimina el subrayado */
+        }
+        .author-info a:hover {
+            text-decoration: underline; /* Subraya el texto al pasar el ratón */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="{% url 'news' %}" class="add-comment-link" >Add Comment</a>
+        </div>
+        <div class="comment-details">
+            <strong class="author-info">
+                <a href="{% url 'accounts:author_profile' parent_comment.author %}">{{ parent_comment.author }}</a>
+                <a href="{% url 'comment_detail' pk=parent_comment.pk %}">{{ parent_comment.time_ago }}</a>
+            </strong> 
+            | on: <a href="{% url 'submission_detail' parent_comment.submission.pk %}" class="submission-title">{{ parent_comment.submission.title }}</a>
+        </div>
+        <p class="comment-text">{{ parent_comment.text }}</p>
+
+        <div class="reply-form">
+            <form method="post">
+                {% csrf_token %}
+                {{ comment_form.non_field_errors }}
+                {{ comment_form.text.errors }}
+                <textarea name="text" rows="4" cols="50" class="reply-textarea">{{ comment_form.text.value|default_if_none:'' }}</textarea>
+                <button type="submit">reply</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

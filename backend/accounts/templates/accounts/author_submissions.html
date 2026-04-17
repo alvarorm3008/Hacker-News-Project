@@ -1,0 +1,213 @@
+{% load socialaccount %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Hacker News{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f6f6ef;
+        }
+        .main-container {
+            width: 95%;
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #f6f6ef;
+        }
+        .header {
+            background-color: #ff6600;
+            padding: 5px 0;
+            border-bottom: 1px solid #e2e2e2;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header .pagetop {
+            color: white;
+            padding: 0 10px;
+        }
+        .header a {
+            color: white;
+            margin-right: 10px;
+            text-decoration: none;
+        }
+        .header .hnname a {
+            font-weight: bold;
+            color: white;
+        }
+        .header .search-form {
+            margin-left: 0px;
+        }
+        .header .search-form input {
+            padding: 5px;
+            font-size: 14px;
+            border-radius: 4px;
+        }
+        .header .search-form button {
+            padding: 6px 12px;
+            font-size: 14px;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .header .user-info a {
+            color: white;
+            text-decoration: none;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid #e2e2e2;
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .news-item a {
+            color: #000;
+            text-decoration: none;
+        }
+        .news-item a:hover {
+            text-decoration: underline;
+        }
+        .no-submissions {
+            margin-top: 10px;
+        }
+        .orange-asterisk {
+            color: #ff6600;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        .points, .author {
+            color: #828282;
+            font-size: 12px;
+        }
+        .author-points-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .author {
+            font-size: 12px;
+        }
+        .time {
+            color: #828282;
+            font-size: 12px;
+        }
+        .vote-button {
+            background-color: #ff6600;
+            color: white;
+            border: none;
+            padding: 3px 8px;
+            font-size: 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Contenedor principal que engloba la cabecera y el contenido -->
+    <div class="main-container">
+        <!-- Cabecera -->
+        <div class="header">
+            <span class="pagetop">
+                <b class="hnname">
+                    <a href="/news">Hacker News</a>
+                </b>
+                <a href="/newest">new</a>
+                <a href="/threads">threads</a>
+                <a href="/comments">comments</a>
+                <a href="/ask">ask</a>
+                <a href="/submissions" rel="nofollow">submit</a>
+            </span>
+
+            <!-- Buscador -->
+            <span class="search-form">
+                <form method="get" action="{% url 'newest' %}">
+                    <input type="text" name="query" placeholder="Busca por título" value="{{ query }}">
+                    <button type="submit">Buscar</button>
+                </form>
+            </span>
+
+            <!-- Usuario -->
+            <span class="user-info">
+                {% if user.is_authenticated %}
+                <div class="user-logout-container">
+                    <a href="{% url 'accounts:profile' %}">{{ user.username }} ({{ karma }})</a>
+                    <a href="#" onclick="document.getElementById('logout-form').submit(); return false;">Logout</a>
+                    <form id="logout-form" method="post" action="{% url 'account_logout' %}" style="display: none;">
+                        {% csrf_token %}
+                    </form>
+                </div>
+                {% else %}
+                <a href="{% provider_login_url 'google' %}">Login with Google</a>
+                {% endif %}
+            </span>
+        </div>
+
+        <!-- Contenedor del contenido -->
+        {% for submission in submissions %}
+        <div class="container">
+            <div class="news-item">
+                {% if user.is_authenticated and user == submission.author %} 
+                    <span class="orange-asterisk">*</span>
+                {% else %}
+                {% if user.is_authenticated %}
+                    <form action="{% url 'vote_submission' submission.id %}" method="post">
+                        {% csrf_token %}
+                        {% if submission.has_voted %}
+                            <button type="submit" class="vote-button">Unvote</button>
+                        {% else %}
+                            <button type="submit" class="vote-button">Vote</button>
+                        {% endif %}
+                    </form>
+                {% else %}
+                    <form action="{% provider_login_url 'google' %}" method="get" style="display: inline;">
+                        <button type="submit" class="vote-button">Vote</button>
+                    </form>
+                {% endif %}
+                {% endif %}
+                <a href="{{ submission.url }}">{{ submission.title }}</a> 
+                {% if submission.shortened_url %}
+                <a href="{{ submission.url }}">({{ submission.shortened_url }})</a> 
+                {% endif %}
+                <div class="author">
+                    <span class="points">{{ submission.points }} points</span>
+                    by <a href="{% url 'accounts:author_profile' submission.author.username %}">{{ submission.author.username }}</a>
+                    <a href="{% url 'submission_detail' pk=submission.pk %}">{{ submission.time_ago }}</a>
+                    {% if user.is_authenticated %}
+                        | <a href="{% url 'newest_hide_submission' submission.id %}">hide</a>
+                    {% else %}
+                        | <a href="{% provider_login_url 'google' %}">hide</a>               
+                    {% endif %}
+                    {% if user.is_authenticated and user == submission.author %} 
+                        | <a href="{% url 'edit_submission' pk=submission.pk %}">edit</a> 
+                        | <a href="{% url 'delete_submission' pk=submission.pk %}">delete</a>
+                    {% else %}
+                        | <a href="{% url 'submission_detail' pk=submission.pk %}">{{ submission.num_comments }}</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+            <div class="news-item no-submissions">No submissions available.</div>
+        {% endfor %}
+    </div>
+
+    <script>
+        function confirmLogout() {
+            if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
+                document.getElementById('logout-form').submit();
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,203 @@
+/* src/styles/Profile.css */
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    background-color: #f6f6ef;
+}
+
+.main-container {
+    width: 100%;
+    min-height: 100vh;
+    background-color: #f6f6ef;
+    margin: 0;
+    padding: 0;
+}
+
+.profile-banner-wrapper {
+    position: relative;
+    width: 85%;
+    height: 300px; /* Aumentado de 200px */
+    margin: 0 auto;
+    padding: 0;
+    margin-top: 10px;
+}
+
+.profile-banner {
+    width: 100%;
+    height: 300px; /* Aumentado de 200px */
+    overflow: hidden;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.profile-banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block; /* Asegura que la imagen se muestre correctamente */
+}
+
+.profile-picture {
+    position: absolute;
+    bottom: -60px; /* Ajustado para la nueva imagen más grande */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px; /* Aumentado de 80px */
+    height: 120px; /* Aumentado de 80px */
+    border-radius: 50%;
+    border: 5px solid white; /* Aumentado de 4px */
+    box-shadow: 0 2px 15px rgba(0,0,0,0.15);
+    overflow: hidden;
+    z-index: 2;
+    background-color: white;
+}
+
+.profile-picture img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block; /* Añadido */
+}
+
+.profile-content {
+    width: 85%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    margin-top: 40px; /* Ajustado para dar más espacio a la foto de perfil */
+}
+
+.profile-selector {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.profile-selector select {
+    padding: 8px 16px;
+    border: 2px solid #ff6600;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.profile-content h1 {
+    text-align: center;
+    margin: 20px 0;
+    color: #333;
+}
+
+.profile-info {
+    text-align: center;
+    margin: 10px 0;
+    color: #666;
+}
+
+/* Añadir estilos en Profile.css */
+.profile-images-editor form {
+    margin: 15px 0;
+}
+
+.profile-images-editor input[type="file"] {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px dashed #ddd;
+    border-radius: 4px;
+    width: 100%;
+}
+
+.profile-images-editor button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.profile-image-section,
+.profile-banner-section {
+    margin: 20px 0;
+    padding: 15px;
+    background-color: white;
+    border-radius: 4px;
+}
+
+.action-button {
+    background-color: #ff6600;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 5px;
+}
+
+.action-button:hover {
+    background-color: #e65c00;
+}
+
+.profile-links {
+    margin-top: 30px;
+    padding: 20px;
+    text-align: center;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.profile-links a {
+    color: #ff6600;
+    text-decoration: none;
+    padding: 0 10px;
+}
+
+.profile-links a:hover {
+    text-decoration: underline;
+}
+
+.separator {
+    color: #666;
+    margin: 0 5px;
+}
+
+input[type="file"] {
+    margin: 10px 0;
+}
+
+.profile-about-section {
+    margin: 40px 0;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.about-edit {
+    margin-top: 10px;
+}
+
+.about-textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    resize: vertical;
+    min-height: 100px;
+}
+
+.about-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.edit-button {
+    background: none;
+    border: none;
+    color: #ff6600;
+    cursor: pointer;
+    padding: 5px;
+    margin-left: 10px;
+}
+
+.edit-button:hover {
+    text-decoration: underline;
+}

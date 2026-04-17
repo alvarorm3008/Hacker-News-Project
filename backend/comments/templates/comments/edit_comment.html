@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hacker News - Edit Comment</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f6f6ef;
+        }
+        .main-container {
+            width: 95%;
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #f6f6ef;
+        }
+        .header {
+            background-color: #ff6600;
+            padding: 5px 0;
+            border-bottom: 1px solid #e2e2e2;
+        }
+        .header .pagetop {
+            color: white;
+            padding: 0 10px;
+        }
+        .header a {
+            color: white;
+            margin-right: 10px;
+            text-decoration: none;
+        }
+        .header .hnname a {
+            font-weight: bold;
+            color: white;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid #e2e2e2;
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .news-item a {
+            color: #000;
+            text-decoration: none;
+        }
+        .news-item a:hover {
+            text-decoration: underline;
+        }
+        .orange-asterisk {
+            color: #ff6600;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        .points, .author {
+            color: #828282;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            margin-top: 10px;
+        }
+        .form-group label {
+            margin-right: 10px;
+        }
+        .form-group textarea {
+            width: 100%; 
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .container button {
+            background-color: #ff6600;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .container button:hover {
+            background-color: #e55b00;
+        }
+        .text {
+            margin-top: 5px;
+            margin-left: 15px;
+        }
+        .edit-form textarea {
+            width: 50%; /* Ajusta el ancho del campo de texto */
+            max-width: 600px; /* Ancho máximo del campo de texto */
+            display: block; /* Asegura que el textarea sea un bloque */
+            margin-bottom: 10px; /* Añade un margen inferior para separar el botón */
+        } 
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <div class="header">
+            <span class="pagetop">
+                <b class="hnname">
+                    <a href="/news">Hacker News</a>
+                </b>
+                <a href="/newest">new</a>
+                <a href="/threads">threads</a>
+                <a href="/comments">comments</a>
+                <a href="/ask">ask</a>
+                <a href="/submissions" rel="nofollow">submit</a>
+            </span>
+        </div>
+
+        <div class="container">
+            <div class="news-item">
+                <div class="author">
+                    <span class="orange-asterisk">*</span> 
+                    <span class="points">{{ comment.points }} points</span>
+                    by <a href="{% url 'accounts:author_profile' comment.author.username %}">{{ comment.author.username }}</a>
+                    <a href="{% url 'edit_comment' pk=comment.pk %}">{{ time_ago }}</a> 
+                    | <a href="{% url 'edit_comment' pk=comment.pk %}">edit</a>  
+                    | <a href="{% url 'delete_comment' pk=comment.pk %}">delete</a>
+                    | on: <a href="{% url 'submission_detail' pk=comment.submission.pk %}">{{ comment.submission.title }}</a> 
+                </div>
+                <div class="text">
+                    {{ comment.text }}
+                </div>
+            </div>
+
+            <!-- Formulario de edición de comentario -->
+            <form method="post" action="{% url 'edit_comment' comment.pk %}" class="edit-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <textarea id="text" name="text" rows="4" class="edit-textarea">{{ comment.text }}</textarea>
+                </div>
+                <button type="submit">Update</button>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

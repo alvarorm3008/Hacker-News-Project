@@ -1,0 +1,99 @@
+.threads-container {
+    width: 100%;
+    margin: 0 auto;
+    background-color: #f6f6ef;
+    padding: 5px;
+    margin-top: 80px; /* Espacio para el header */
+    margin-left: 20px;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f6f6ef;
+}
+
+.main-container {
+    width: 95%;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #f6f6ef;
+}
+
+.container {
+    background-color: white;
+    padding: 20px;
+    margin: 20px 0;
+    border: 1px solid #e2e2e2;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+/* Estilo principal de cada comentario */
+.comment {
+    background-color: #fff;
+    padding: 15px;
+    border-bottom: 1px solid #ddd; /* Añadido para consistencia con News */
+    margin-bottom: 10px;
+    margin-right: 20px; /* Añadido para equilibrar el margen izquierdo */
+}
+
+/* Respuesta (subcomentario) */
+.reply {
+    margin-left: 30px;
+    background-color: #f6f6ef;
+    padding: 15px;
+    border: 1px solid #e2e2e2;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Texto del comentario */
+.text {
+    margin-top: 10px;
+    margin-left: 15px;
+    font-size: 14px;
+    color: #333;
+}
+
+.author {
+    margin-right: 10px; /* Espacio entre el autor y el time-ago */
+}
+
+/* Botón de votación */
+.vote-button {
+    background-color: #ff6600;
+    color: white;
+    border: none;
+    padding: 3px 8px;
+    font-size: 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-right: 5px;
+}
+
+.vote-button:hover {
+    background-color: #e65c00;
+}
+
+/* Enlaces y asterisco */
+.orange-asterisk {
+    color: #ff6600;
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.text-gray {
+    color: #828282;
+    font-size: 12px;
+}
+
+a {
+    color: #000;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}

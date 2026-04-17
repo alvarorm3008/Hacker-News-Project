@@ -1,0 +1,131 @@
+{% load socialaccount %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Hacker News - Profile{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f6f6ef;
+        }
+        .main-container {
+            width: 95%;
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #f6f6ef;
+        }
+        /* Cabecera */
+        .header {
+            background-color: #ff6600;
+            padding: 5px 0;
+            border-bottom: 1px solid #e2e2e2;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header .pagetop {
+            color: white;
+            padding: 0 10px;
+        }
+        .header a {
+            color: white;
+            margin-right: 10px;
+            text-decoration: none;
+        }
+        .header .hnname a {
+            font-weight: bold;
+            color: white;
+        }
+        .header .user-info a {
+            color: white;
+            text-decoration: none;
+        }
+        /* Contenedor de perfil */
+        .profile-container {
+            background-color: white;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid #e2e2e2;
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .profile-container h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #ff6600;
+        }
+        .profile-info {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        /* Botones de enlaces */
+        .profile-container a {
+            display: inline-block;
+            margin-top: 10px;
+            color: #ff6600;
+            text-decoration: none;
+        }
+        .profile-container a:hover {
+            text-decoration: underline;
+        }
+        /* Botón de cerrar sesión */
+        .logout-button {
+            background-color: #d9534f;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <!-- Cabecera -->
+        <div class="header">
+            <span class="pagetop">
+                <b class="hnname">
+                    <a href="/news">Hacker News</a>
+                </b>
+                <a href="/newest">new</a>
+                <a href="/threads">threads</a>
+                <a href="/comments">comments</a>
+                <a href="/ask">ask</a>
+                <a href="/submissions" rel="nofollow">submit</a>
+            </span>
+            
+        </div>
+
+        <!-- Contenedor de perfil -->
+        <div class="profile-container">
+            <h1>Perfil de {{ user.username }}</h1>
+            <p class="profile-info"><strong>Creado el:</strong> {{ user.date_joined }}</p>
+            <p class="profile-info"><strong>Karma:</strong> {{ karma }}</p>
+            <p class="profile-info"><strong>About:</strong> {{ user.profile.about }}</p>
+        
+            <!-- Enlaces de perfil -->
+            <div class="profile-links">
+                <a href="{% url 'accounts:author_submissions' author_username %}">Submissions</a> |  
+                <a href="{% url 'accounts:author_comments' author_username %}">Comments</a> |
+                <a href="{% url 'accounts:favorite_submissions' author_username %}">Favorite Submissions</a> |
+                <a href="{% url 'accounts:favorite_comments' author_username %}">Favorite Comments</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function confirmLogout() {
+            if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
+                document.getElementById('logout-form').submit();
+            }
+        }
+    </script>
+</body>
+</html>

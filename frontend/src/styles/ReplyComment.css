@@ -1,0 +1,81 @@
+/* Contenedor principal del componente ReplyComment para modificar el estilo */
+.container-reply {
+    background-color: white;
+    padding: 20px;
+    margin: 20px auto;
+    border: 1px solid #e2e2e2;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    width: 90%; /* Ocupa todo el espacio dentro del main-container */
+    margin-left: 20px;
+    margin-top: 100px; /* Afegeix espai per sota de la capçalera */
+}
+
+/* Estilo de los detalles del comentario */
+.comment-details-parent {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+/* Estilo del texto del comentario */
+.comment-text-parent {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+/* Formulario de respuesta */
+.reply-form {
+    margin-top: 20px;
+}
+
+/* Estilo del área de texto para la respuesta */
+.reply-textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    resize: vertical; /* Permite redimensionar verticalmente */
+    margin-bottom: 10px;
+}
+
+/* Botón de respuesta */
+.submit-reply-button {
+    background-color: #ff6600;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+/* Efecto al pasar el ratón sobre el botón */
+.submit-reply-button:hover {
+    background-color: #e65c00;
+}
+
+/* Estilo para el mensaje de error */
+.error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.author-link {
+    color: #000000;
+    font-size: 16px;
+    text-decoration: none;
+    font-weight: normal;
+}
+
+.time-link {
+    color: #000000;
+    font-size: 16px;
+    text-decoration: none;
+    font-weight: normal;
+}
+

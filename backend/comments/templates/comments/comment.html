@@ -1,0 +1,41 @@
+{% load socialaccount %}
+<li class="comment">
+    {% if user.is_authenticated and user == comment.author %} 
+        <span class="orange-asterisk">*</span>
+    {% else %}
+        {% if user.is_authenticated %}
+            <form action="{% url 'vote_comment' comment.id %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.path }}">
+                {% if comment.has_voted %}
+                    <button type="submit" class="vote-button">Unvote</button>
+                {% else %}
+                    <button type="submit" class="vote-button">Vote</button>
+                {% endif %}
+            </form>
+        {% else %}
+            <form action="{% provider_login_url 'google' %}" method="get" style="display: inline;">
+                <button type="submit" class="vote-button">Vote</button>
+            </form>        
+        {% endif %}
+    {% endif %}
+    <a href="{% url 'accounts:author_profile' comment.author %}">{{ comment.author }}</a>
+    <a href="{% url 'comment_detail' pk=comment.pk %}">{{ comment.time_ago }}</a>
+    {% if user.is_authenticated and user == comment.author %}
+        <span class="separator">|</span>
+        <a href="{% url 'edit_comment' pk=comment.pk %}">edit</a> 
+        <span class="separator">|</span>
+        <a href="{% url 'delete_comment' pk=comment.pk %}">delete</a>
+    {% endif %}
+    <div class="text">
+        {{ comment.text }}
+    </div>
+    <a class="reply-link" href="{% url 'reply_comment' comment.pk %}">Reply</a>
+    {% if comment.replies.all %}
+        <ul>
+            {% for reply in comment.replies.all %}
+                {% include "comments/comment.html" with comment=reply %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+</li>

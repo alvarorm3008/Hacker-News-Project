@@ -1,0 +1,2486 @@
+openapi: 3.0.0
+info:
+  title: "API de Hacker News"
+  description: "API para la web de Hacker News."
+  version: "1.0.0"
+
+servers:
+  - url: 'https://aswproject.onrender.com'
+  
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization  # Aquí se espera la API Key, generalmente en el encabezado 'Authorization'
+
+security:
+  - ApiKeyAuth: []
+
+paths:
+
+  /api/news:
+    get:
+      summary: "Retrieve news submissions"
+      description: "API endpoint to retrieve news submissions, optionally filtered by a search query."
+      parameters:
+        - name: query
+          in: query
+          description: "Search term to filter submissions by title"
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "A JSON response containing the list of news submissions"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: "ID de la submission"
+                      example: 1
+                    title:
+                      type: string
+                      description: "Título de la submission"
+                      example: "Example submission"
+                    points:
+                      type: integer
+                      description: "Número de puntos de la submission"
+                      example: 10
+                    submission_type:
+                      type: string
+                      description: "Tipo de submission"
+                      example: "url"
+                    time_ago:
+                      type: string
+                      description: "Tiempo que ha pasado desde la creación de la submission"
+                      example: "19 hours ago"
+                    num_comments:
+                      type: string
+                      description: "Número de comentarios de la submission"
+                      example: "discuss"
+                    has_voted:
+                      type: boolean
+                      description: "Indica si el usuario ha votado en la submission"
+                      example: false
+        '400':
+          description: "Solicitud incorrecta, el término de búsqueda no es válido."
+        '401':
+          description: "No autorizado, se requiere autenticación para acceder al recurso."
+
+  /api/ask:
+    get:
+      summary: "Recuperar submissions de tipo 'ask'"
+      description: "Este endpoint devuelve una lista de submissions de tipo 'ask', filtradas por título si se proporciona un término de búsqueda."
+      parameters:
+        - name: "query"
+          in: "query"
+          description: "Término de búsqueda para filtrar submissions por título."
+          required: false
+          schema:
+            type: string
+            example: "¿Cómo programar en Python?"
+      responses:
+        '200':
+          description: "Una respuesta JSON con la lista de submissions de tipo 'ask'."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: "ID de la submission"
+                      example: 9
+                    title:
+                      type: string
+                      description: "Título de la submission"
+                      example: "Modificado"
+                    author:
+                      type: string
+                      description: "Autor de la submission"
+                      example: "laia"
+                    points:
+                      type: integer
+                      description: "Número de puntos de la submission"
+                      example: 1
+                    submission_type:
+                      type: string
+                      description: "Tipo de submission"
+                      example: "ask"
+                    time_ago:
+                      type: string
+                      description: "Tiempo que ha pasado desde la creación de la submission"
+                      example: "19 hours ago"
+                    num_comments:
+                      type: string
+                      description: "Número de comentarios de la submission"
+                      example: "discuss"
+                    has_voted:
+                      type: boolean
+                      description: "Indica si el usuario ha votado en la submission"
+                      example: false
+        '400':
+          description: "Solicitud incorrecta, el término de búsqueda no es válido."
+        '401':
+          description: "No autorizado, se requiere autenticación para acceder al recurso."
+
+  /api/newest:
+    get:
+      summary: "Retrieve the newest submissions"
+      description: "API endpoint to retrieve the newest submissions, optionally filtered by a search query."
+      parameters:
+        - name: query
+          in: query
+          description: "Search term to filter submissions by title"
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "A JSON response containing the list of newest submissions"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: "ID de la submission"
+                      example: 1
+                    title:
+                      type: string
+                      description: "Título de la submission"
+                      example: "Example submission"
+                    points:
+                      type: integer
+                      description: "Número de puntos de la submission"
+                      example: 1
+                    submission_type:
+                      type: string
+                      description: "Tipo de submission"
+                      example: "ask"
+                    time_ago:
+                      type: string
+                      description: "Tiempo que ha pasado desde la creación de la submission"
+                      example: "19 hours ago"
+                    num_comments:
+                      type: string
+                      description: "Número de comentarios de la submission"
+                      example: "discuss"
+                    has_voted:
+                      type: boolean
+                      description: "Indica si el usuario ha votado en la submission"
+                      example: false
+        '400':
+          description: "Solicitud incorrecta, el término de búsqueda no es válido."
+        '401':
+          description: "No autorizado, se requiere autenticación para acceder al recurso."
+          
+  /api/threads:
+    get:
+      summary: "Retrieve user comments and replies"
+      description: "API endpoint to retrieve comments and replies made by the authenticated user."
+      security:
+        - ApiKeyAuth: []  # Este endpoint requiere la API Key para acceder
+      responses:
+        '200':
+          description: "A JSON response containing the list of user comments and replies"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  comments:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: "ID del comentario"
+                          example: 1
+                        content:
+                          type: string
+                          description: "Contenido del comentario"
+                          example: "Este es un comentario de ejemplo"
+                        created_at:
+                          type: string
+                          format: date-time
+                          description: "Fecha de creación del comentario"
+                          example: "2023-10-01T12:34:56Z"
+                        time_ago:
+                          type: string
+                          description: "Tiempo que ha pasado desde la creación del comentario"
+                          example: "2 hours ago"
+                        has_voted:
+                          type: boolean
+                          description: "Indica si el usuario ha votado en el comentario"
+                          example: false
+        '403':
+          description: "No autorizado, se requiere autenticación para acceder al recurso."
+
+  /api/hidden_submissions:
+    get:
+      summary: "Retrieve hidden submissions"
+      description: "API endpoint to retrieve hidden submissions for the authenticated user."
+      security:
+        - ApiKeyAuth: []  # Este endpoint requiere la API Key para acceder
+      responses:
+        '200':
+          description: "A JSON response containing the list of hidden submissions"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: "ID de la submission"
+                      example: 1
+                    title:
+                      type: string
+                      description: "Título de la submission"
+                      example: "Example submission"
+                    points:
+                      type: integer
+                      description: "Número de puntos de la submission"
+                      example: 1
+                    submission_type:
+                      type: string
+                      description: "Tipo de submission"
+                      example: "ask"
+                    time_ago:
+                      type: string
+                      description: "Tiempo que ha pasado desde la creación de la submission"
+                      example: "19 hours ago"
+                    num_comments:
+                      type: string
+                      description: "Número de comentarios de la submission"
+                      example: "discuss"
+                    has_voted:
+                      type: boolean
+                      description: "Indica si el usuario ha votado en la submission"
+                      example: false
+        '403':
+          description: "No autorizado, se requiere autenticación para acceder al recurso."
+
+  /api/submit:
+      post:
+        summary: "Create a new submission"
+        description: "API endpoint to create a new submission. The submission can be of type 'url' or 'ask'."
+        security:
+          - ApiKeyAuth: []  # Este endpoint requiere la API Key para acceder
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  title:
+                    type: string
+                    description: "Título de la submission"
+                    example: "Example submission"
+                  url:
+                    type: string
+                    description: "URL de la submission (opcional)"
+                    example: "https://example.com"
+                  text:
+                    type: string
+                    description: "Texto de la submission (opcional)"
+                    example: "Este es un texto de ejemplo"
+        responses:
+          '201':
+            description: "Submission created successfully"
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    detail:
+                      type: string
+                      description: "Mensaje de éxito"
+                      example: "Submission created successfully"
+                    submission:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: "ID de la submission"
+                          example: 1
+                        title:
+                          type: string
+                          description: "Título de la submission"
+                          example: "Example submission"
+                        url:
+                          type: string
+                          description: "URL de la submission"
+                          example: "https://example.com"
+                        text:
+                          type: string
+                          description: "Texto de la submission"
+                          example: "Este es un texto de ejemplo"
+                        submission_type:
+                          type: string
+                          description: "Tipo de submission"
+                          example: "url"
+                        author:
+                          type: string
+                          description: "Autor de la submission"
+                          example: "username"
+                        
+          '200':
+            description: "Submission already exists"
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    detail:
+                      type: string
+                      description: "Mensaje indicando que la submission ya existe"
+                      example: "Submission already exists"
+                    submission:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: "ID de la submission"
+                          example: 1
+                        title:
+                          type: string
+                          description: "Título de la submission"
+                          example: "Example submission"
+                        url:
+                          type: string
+                          description: "URL de la submission"
+                          example: "https://example.com"
+                        text:
+                          type: string
+                          description: "Texto de la submission"
+                          example: "Este es un texto de ejemplo"
+                        submission_type:
+                          type: string
+                          description: "Tipo de submission"
+                          example: "url"
+                        author:
+                          type: string
+                          description: "Autor de la submission"
+                          example: "username"
+                        created_at:
+                          type: string
+                          format: date-time
+                          description: "Fecha de creación de la submission"
+                          example: "2023-10-01T12:34:56Z"
+          '400':
+            description: "Invalid data"
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    detail:
+                      type: string
+                      description: "Mensaje de error"
+                      example: "Invalid data"
+                    errors:
+                      type: object
+                      description: "Detalles de los errores de validación"
+          '403':
+            description: "No autorizado, se requiere autenticación para acceder al recurso."
+
+  /api/submission/{pk}:
+    get:
+      summary: "Get submission details and comments"
+      description: "Retrieve detailed information about a specific submission including its comments. Public access allowed."
+      parameters:
+        - name: pk
+          in: path
+          required: true
+          description: "ID of the submission to retrieve"
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "Successfully retrieved submission details"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  submission:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: "ID de la submission"
+                        example: 1
+                      title:
+                        type: string
+                        description: "Título de la submission"
+                        example: "Example submission"
+                      url:
+                        type: string
+                        description: "URL original de la submission"
+                        example: "https://example.com"
+                      shortened_url:
+                        type: string
+                        description: "URL acortada de la submission"
+                        example: "example.com"
+                      text:
+                        type: string
+                        description: "Texto de la submission"
+                        example: "Este es un texto de ejemplo"
+                      author:
+                        type: string
+                        description: "Autor de la submission"
+                        example: "username"
+                      time_ago:
+                        type: string
+                        description: "Tiempo transcurrido desde la creación"
+                        example: "2 hours ago"
+                      num_comments:
+                        type: integer
+                        description: "Número total de comentarios"
+                        example: 5
+                      has_voted:
+                        type: boolean
+                        description: "Indica si el usuario autenticado ha votado"
+                        example: false
+                  comments:
+                    type: array
+                    description: "Lista de comentarios principales"
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: "ID del comentario"
+                          example: 1
+                        content:
+                          type: string
+                          description: "Contenido del comentario"
+                          example: "Este es un comentario"
+                        author:
+                          type: string
+                          description: "Autor del comentario"
+                          example: "username"
+        '404':
+          description: "Submission not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    description: "Mensaje de error"
+                    example: "No Submission matches the given query."
+                    
+    delete:
+      summary: "Delete a submission"
+      description: "Deletes a specific submission by ID. Only the author of the submission can perform this action."
+      security:
+        - ApiKeyAuth: []  # Este endpoint requiere autenticación
+      parameters:
+        - name: pk
+          in: path
+          required: true
+          description: "ID of the submission to delete"
+          schema:
+            type: integer
+      responses:
+        '200':  # Código de respuesta para indicar éxito con un mensaje
+          description: "Submission deleted successfully."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example: "Submission deleted successfully."
+        '403':
+          description: "Forbidden. The authenticated user does not have permission to delete this submission."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example: "You do not have permission to delete this submission."
+        '404':
+          description: "Submission not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example: "Not found."
+
+
+    put:
+      summary: "Update a submission"
+      description: "Update a specific submission. Only the author of the submission can update it."
+      security:
+        - ApiKeyAuth: []  # Este endpoint requiere autenticación
+      parameters:
+        - name: pk
+          in: path
+          required: true
+          description: "ID of the submission to update"
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: "Título de la submission"
+                  example: "Updated submission title"
+                text:
+                  type: string
+                  description: "Texto de la submission"
+                  example: "Updated submission text"
+      responses:
+        '200':
+          description: "Submission updated successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    description: "Mensaje de éxito"
+                    example: "Submission updated successfully"
+                  submission:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: "ID de la submission"
+                        example: 1
+                      title:
+                        type: string
+                        description: "Título de la submission"
+                        example: "Updated submission title"
+                      url:
+                        type: string
+                        description: "URL original de la submission"
+                        example: "https://example.com"
+                      shortened_url:
+                        type: string
+                        description: "URL acortada de la submission"
+                        example: "example.com"
+                      text:
+                        type: string
+                        description: "Texto de la submission"
+                        example: "Updated submission text"
+                      author:
+                        type: string
+                        description: "Autor de la submission"
+                        example: "username"
+                      time_ago:
+                        type: string
+                        description: "Tiempo transcurrido desde la creación"
+                        example: "2 hours ago"
+                      num_comments:
+                        type: integer
+                        description: "Número total de comentarios"
+                        example: 5
+                      has_voted:
+                        type: boolean
+                        description: "Indica si el usuario autenticado ha votado"
+                        example: false
+        '400':
+          description: "Invalid data"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    description: "Mensaje de error"
+                    example: "Invalid data"
+                  errors:
+                    type: object
+                    description: "Detalles de los errores de validación"
+        '403':
+          description: "Permission denied"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    description: "Mensaje de error"
+                    example: "You do not have permission to edit this submission."
+        '404':
+          description: "Submission not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    description: "Mensaje de error"
+                    example: "Not found."
+    
+    post:
+      summary: "Add a comment to a submission"
+      description: "Add a comment to a specific submission. Users cannot comment on their own submissions."
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: pk
+          in: path
+          required: true
+          description: "ID of the submission to comment on"
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                  description: "Contenido del comentario"
+                  example: "Este es un comentario de ejemplo"
+      responses:
+        '201':
+          description: "Comment added successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    description: "Mensaje de éxito"
+                    example: "Comment added successfully."
+                  submission:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: "ID de la submission"
+                        example: 1
+                      title:
+                        type: string
+                        description: "Título de la submission"
+                        example: "Example submission"
+                      url:
+                        type: string
+                        description: "URL original de la submission"
+                        example: "https://example.com"
+                      shortened_url:
+                        type: string
+                        description: "URL acortada de la submission"
+                        example: "example.com"
+                      text:
+                        type: string
+                        description: "Texto de la submission"
+                        example: "Este es un texto de ejemplo"
+                      author:
+                        type: string
+                        description: "Autor de la submission"
+                        example: "username"
+                      time_ago:
+                        type: string
+                        description: "Tiempo transcurrido desde la creación"
+                        example: "2 hours ago"
+                      num_comments:
+                        type: integer
+                        description: "Número total de comentarios"
+                        example: 5
+                      has_voted:
+                        type: boolean
+                        description: "Indica si el usuario autenticado ha votado"
+                        example: false
+                  comments:
+                    type: array
+                    description: "Lista de comentarios principales"
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: "ID del comentario"
+                          example: 1
+                        text:
+                          type: string
+                          description: "Contenido del comentario"
+                          example: "Este es un comentario"
+                        author:
+                          type: string
+                          description: "Autor del comentario"
+                          example: "username"
+        '400':
+          description: "Invalid data"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    description: "Mensaje de error"
+                    example: "Invalid data"
+                  errors:
+                    type: object
+                    description: "Detalles de los errores de validación"
+        '403':
+          description: "Permission denied"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    description: "Mensaje de error"
+                    example: "You cannot comment on your own submission."
+        '404':
+          description: "Submission not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    description: "Mensaje de error"
+                    example: "Not found."
+
+  /api/submission/{pk}/vote:
+    post:
+      summary: "Upvote a submission"
+      description: "Vote (upvote) on a specific submission. Users cannot vote on their own submissions. If the user has already voted, an error will be returned."
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: pk
+          in: path
+          required: true
+          description: "ID of the submission to upvote"
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "Submission upvoted successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    description: "Mensaje de éxito"
+                    example: "Submission upvoted successfully."
+                  submission:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: "ID de la submission"
+                        example: 1
+                      title:
+                        type: string
+                        description: "Título de la submission"
+                        example: "Example submission"
+                      url:
+                        type: string
+                        description: "URL original de la submission"
+                        example: "https://example.com"
+                      shortened_url:
+                        type: string
+                        description: "URL acortada de la submission"
+                        example: "example.com"
+                      text:
+                        type: string
+                        description: "Texto de la submission"
+                        example: "Este es un texto de ejemplo"
+                      author:
+                        type: string
+                        description: "Autor de la submission"
+                        example: "username"
+                      time_ago:
+                        type: string
+                        description: "Tiempo transcurrido desde la creación"
+                        example: "2 hours ago"
+                      num_comments:
+                        type: integer
+                        description: "Número total de comentarios"
+                        example: 5
+                      has_voted:
+                        type: boolean
+                        description: "Indica si el usuario autenticado ha votado"
+                        example: true
+        '400':
+          description: "Permission denied or already voted"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    description: "Mensaje de error"
+                    example: "You cannot vote on your own submission or you have already voted."
+        '403':
+          description: "Unauthorized, authentication required"
+        '404':
+          description: "Submission not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    description: "Mensaje de error"
+                    example: "No Submission matches the given query."
+  
+    delete:
+      summary: "Downvote a submission"
+      description: "Remove a vote (downvote) from a specific submission. Users cannot remove votes from their own submissions. If the user has not voted, an error will be returned."
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: pk
+          in: path
+          required: true
+          description: "ID of the submission to downvote"
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "Submission downvoted successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    description: "Mensaje de éxito"
+                    example: "Submission downvoted successfully."
+                  submission:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: "ID de la submission"
+                        example: 1
+                      title:
+                        type: string
+                        description: "Título de la submission"
+                        example: "Example submission"
+                      url:
+                        type: string
+                        description: "URL original de la submission"
+                        example: "https://example.com"
+                      shortened_url:
+                        type: string
+                        description: "URL acortada de la submission"
+                        example: "example.com"
+                      text:
+                        type: string
+                        description: "Texto de la submission"
+                        example: "Este es un texto de ejemplo"
+                      author:
+                        type: string
+                        description: "Autor de la submission"
+                        example: "username"
+                      time_ago:
+                        type: string
+                        description: "Tiempo transcurrido desde la creación"
+                        example: "2 hours ago"
+                      num_comments:
+                        type: integer
+                        description: "Número total de comentarios"
+                        example: 5
+                      has_voted:
+                        type: boolean
+                        description: "Indica si el usuario autenticado ha votado"
+                        example: false
+        '400':
+          description: "Permission denied or no vote to remove"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    description: "Mensaje de error"
+                    example: "You cannot remove a vote from your own submission or you haven't voted yet."
+        '403':
+          description: "Unauthorized, authentication required"
+        '404':
+          description: "Submission not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    description: "Mensaje de error"
+                    example: "No Submission matches the given query."
+
+  /api/submission/{pk}/favorite:
+    post:
+      summary: "Add a submission to favorites"
+      description: "Mark a specific submission as favorite. Only authenticated users can perform this action."
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: pk
+          in: path
+          required: true
+          description: "ID of the submission to favorite"
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "Submission added to favorites successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    description: "Mensaje de éxito"
+                    example: "Submission added to favorites successfully."
+                  favorite_submissions:
+                    type: array
+                    description: "Lista de submissions favoritas del usuario"
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: "ID de la submission"
+                          example: 1
+                        title:
+                          type: string
+                          description: "Título de la submission"
+                          example: "Example submission"
+                        url:
+                          type: string
+                          description: "URL original de la submission"
+                          example: "https://example.com"
+                        shortened_url:
+                          type: string
+                          description: "URL acortada de la submission"
+                          example: "example.com"
+                        text:
+                          type: string
+                          description: "Texto de la submission"
+                          example: "Este es un texto de ejemplo"
+                        author:
+                          type: string
+                          description: "Autor de la submission"
+                          example: "username"
+                        time_ago:
+                          type: string
+                          description: "Tiempo transcurrido desde la creación"
+                          example: "2 hours ago"
+                        num_comments:
+                          type: integer
+                          description: "Número total de comentarios"
+                          example: 5
+                        has_voted:
+                          type: boolean
+                          description: "Indica si el usuario autenticado ha votado"
+                          example: true
+        '400':
+          description: "Submission already in favorites"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    description: "Mensaje de error"
+                    example: "Submission is already in favorites."
+        '404':
+          description: "Submission not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    description: "Mensaje de error"
+                    example: "Not found."
+    delete:
+      summary: "Remove a submission from favorites"
+      description: "Remove a specific submission from favorites. Only authenticated users can perform this action."
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: pk
+          in: path
+          required: true
+          description: "ID of the submission to unfavorite"
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "Submission removed from favorites successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    description: "Mensaje de éxito"
+                    example: "Submission removed from favorites successfully."
+                  favorite_submissions:
+                    type: array
+                    description: "Lista de submissions favoritas del usuario"
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: "ID de la submission"
+                          example: 1
+                        title:
+                          type: string
+                          description: "Título de la submission"
+                          example: "Example submission"
+                        url:
+                          type: string
+                          description: "URL original de la submission"
+                          example: "https://example.com"
+                        shortened_url:
+                          type: string
+                          description: "URL acortada de la submission"
+                          example: "example.com"
+                        text:
+                          type: string
+                          description: "Texto de la submission"
+                          example: "Este es un texto de ejemplo"
+                        author:
+                          type: string
+                          description: "Autor de la submission"
+                          example: "username"
+                        time_ago:
+                          type: string
+                          description: "Tiempo transcurrido desde la creación"
+                          example: "2 hours ago"
+                        num_comments:
+                          type: integer
+                          description: "Número total de comentarios"
+                          example: 5
+                        has_voted:
+                          type: boolean
+                          description: "Indica si el usuario autenticado ha votado"
+                          example: true
+        '400':
+          description: "Submission not in favorites"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    description: "Mensaje de error"
+                    example: "Submission is not in favorites."
+        '404':
+          description: "Submission not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    description: "Mensaje de error"
+                    example: "Not found."
+
+
+  /api/submission/{pk}/hide:
+    post:
+      summary: "Hide a submission"
+      description: "Hide a specific submission for the authenticated user. Only authenticated users can perform this action."
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: pk
+          in: path
+          required: true
+          description: "ID of the submission to hide"
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "Submission hidden successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: "Estado de la acción realizada"
+                    example: "hidden"
+                  visible_submissions:
+                    type: array
+                    description: "Lista de submissions visibles para el usuario"
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: "ID de la submission"
+                          example: 1
+                        title:
+                          type: string
+                          description: "Título de la submission"
+                          example: "Example submission"
+                        url:
+                          type: string
+                          description: "URL original de la submission"
+                          example: "https://example.com"
+                        shortened_url:
+                          type: string
+                          description: "URL acortada de la submission"
+                          example: "example.com"
+                        text:
+                          type: string
+                          description: "Texto de la submission"
+                          example: "Este es un texto de ejemplo"
+                        author:
+                          type: string
+                          description: "Autor de la submission"
+                          example: "username"
+                        time_ago:
+                          type: string
+                          description: "Tiempo transcurrido desde la creación"
+                          example: "2 hours ago"
+                        num_comments:
+                          type: integer
+                          description: "Número total de comentarios"
+                          example: 5
+                        has_voted:
+                          type: boolean
+                          description: "Indica si el usuario autenticado ha votado"
+                          example: true
+        '400':
+          description: "Already hidden"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    description: "Mensaje de error"
+                    example: "You have already hidden this submission."
+        '404':
+          description: "Submission not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    description: "Mensaje de error"
+                    example: "Submission not found."
+    
+    delete:
+      summary: "Unhide a submission"
+      description: "Unhide a specific submission for the authenticated user. Only authenticated users can perform this action."
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: pk
+          in: path
+          required: true
+          description: "ID of the submission to unhide"
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "Submission unhidden successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: "Estado de la acción realizada"
+                    example: "unhidden"
+                  visible_submissions:
+                    type: array
+                    description: "Lista de submissions visibles para el usuario"
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: "ID de la submission"
+                          example: 1
+                        title:
+                          type: string
+                          description: "Título de la submission"
+                          example: "Example submission"
+                        url:
+                          type: string
+                          description: "URL original de la submission"
+                          example: "https://example.com"
+                        shortened_url:
+                          type: string
+                          description: "URL acortada de la submission"
+                          example: "example.com"
+                        text:
+                          type: string
+                          description: "Texto de la submission"
+                          example: "Este es un texto de ejemplo"
+                        author:
+                          type: string
+                          description: "Autor de la submission"
+                          example: "username"
+                        time_ago:
+                          type: string
+                          description: "Tiempo transcurrido desde la creación"
+                          example: "2 hours ago"
+                        num_comments:
+                          type: integer
+                          description: "Número total de comentarios"
+                          example: 5
+                        has_voted:
+                          type: boolean
+                          description: "Indica si el usuario autenticado ha votado"
+                          example: true
+        '400':
+          description: "Not hidden"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    description: "Mensaje de error"
+                    example: "You have not hidden this submission."
+        '404':
+          description: "Submission not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    description: "Mensaje de error"
+                    example: "Submission not found."
+
+
+  /api/voted_submissions:
+    get:
+      summary: "Retrieve voted submissions"
+      description: "API endpoint to retrieve submissions voted by the authenticated user."
+      security:
+        - ApiKeyAuth: []  # Este endpoint requiere la API Key para acceder
+      responses:
+        '200':
+          description: "A JSON response containing the list of voted submissions"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: "ID de la submission"
+                      example: 1
+                    title:
+                      type: string
+                      description: "Título de la submission"
+                      example: "Example submission"
+                    points:
+                      type: integer
+                      description: "Número de puntos de la submission"
+                      example: 1
+                    submission_type:
+                      type: string
+                      description: "Tipo de submission"
+                      example: "ask"
+                    time_ago:
+                      type: string
+                      description: "Tiempo que ha pasado desde la creación de la submission"
+                      example: "19 hours ago"
+                    num_comments:
+                      type: string
+                      description: "Número de comentarios de la submission"
+                      example: "discuss"
+                    has_voted:
+                      type: boolean
+                      description: "Indica si el usuario ha votado en la submission"
+                      example: false
+        '401':
+           description: "No autorizado, se requiere autenticación para acceder al recurso."
+
+  /api/voted_comments:
+    get:
+      summary: "Retrieve voted comments"
+      description: "API endpoint to retrieve comments voted by the authenticated user."
+      security:
+        - ApiKeyAuth: []  # Este endpoint requiere la API Key para acceder
+      responses:
+        '200':
+          description: "A JSON response containing the list of voted comments"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: "ID del comentario"
+                      example: 1
+                    content:
+                      type: string
+                      description: "Contenido del comentario"
+                      example: "Este es un comentario de ejemplo"
+                    created_at:
+                      type: string
+                      format: date-time
+                      description: "Fecha de creación del comentario"
+                      example: "2023-10-01T12:34:56Z"
+                    time_ago:
+                      type: string
+                      description: "Tiempo que ha pasado desde la creación del comentario"
+                      example: "2 hours ago"
+                    has_voted:
+                      type: boolean
+                      description: "Indica si el usuario ha votado en el comentario"
+                      example: false
+        '401':
+          description: "No autorizado, se requiere autenticación para acceder al recurso."
+
+  /api/favorite_submissions:
+    get:
+      summary: "Retrieve favorite submissions"
+      description: "API endpoint to retrieve submissions favorited by the authenticated user."
+      security:
+        - ApiKeyAuth: []  # Este endpoint requiere la API Key para acceder
+      responses:
+        '200':
+          description: "A JSON response containing the list of favorite submissions"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: "ID de la submission"
+                      example: 1
+                    title:
+                      type: string
+                      description: "Título de la submission"
+                      example: "Example submission"
+                    points:
+                      type: integer
+                      description: "Número de puntos de la submission"
+                      example: 1
+                    submission_type:
+                      type: string
+                      description: "Tipo de submission"
+                      example: "ask"
+                    time_ago:
+                      type: string
+                      description: "Tiempo que ha pasado desde la creación de la submission"
+                      example: "19 hours ago"
+                    num_comments:
+                      type: string
+                      description: "Número de comentarios de la submission"
+                      example: "discuss"
+                    has_voted:
+                      type: boolean
+                      description: "Indica si el usuario ha votado en la submission"
+                      example: false
+        '401':
+          description: "No autorizado, se requiere autenticación para acceder al recurso."
+
+  /api/favorite_comments:
+    get:
+      summary: "Retrieve favorite comments"
+      description: "API endpoint to retrieve comments favorited by the authenticated user."
+      security:
+        - ApiKeyAuth: []  # Este endpoint requiere la API Key para acceder
+      responses:
+        '200':
+          description: "A JSON response containing the list of favorite comments"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: "ID del comentario"
+                      example: 1
+                    content:
+                      type: string
+                      description: "Contenido del comentario"
+                      example: "Este es un comentario de ejemplo"
+                    created_at:
+                      type: string
+                      format: date-time
+                      description: "Fecha de creación del comentario"
+                      example: "2023-10-01T12:34:56Z"
+                    time_ago:
+                      type: string
+                      description: "Tiempo que ha pasado desde la creación del comentario"
+                      example: "2 hours ago"
+                    has_voted:
+                      type: boolean
+                      description: "Indica si el usuario ha votado en el comentario"
+                      example: false
+        '401':
+          description: "No autorizado, se requiere autenticación para acceder al recurso."
+
+  /api/author/{username}/submissions:
+    get:
+      summary: "Retrieve submissions by author"
+      description: "API endpoint to retrieve submissions made by a specific author."
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: "Username of the author"
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "A JSON response containing the list of submissions by the author"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: "ID de la submission"
+                      example: 1
+                    title:
+                      type: string
+                      description: "Título de la submission"
+                      example: "Example submission"
+                    points:
+                      type: integer
+                      description: "Número de puntos de la submission"
+                      example: 1
+                    submission_type:
+                      type: string
+                      description: "Tipo de submission"
+                      example: "ask"
+                    time_ago:
+                      type: string
+                      description: "Tiempo que ha pasado desde la creación de la submission"
+                      example: "19 hours ago"
+                    num_comments:
+                      type: string
+                      description: "Número de comentarios de la submission"
+                      example: "discuss"
+                    has_voted:
+                      type: boolean
+                      description: "Indica si el usuario ha votado en la submission"
+                      example: false
+        '404':
+          description: "No encontrado, el autor no existe."
+        '401':
+          description: "No autorizado, se requiere autenticación para acceder al recurso."
+
+  /api/author/{username}/comments:
+    get:
+      summary: "Retrieve comments by author"
+      description: "API endpoint to retrieve comments made by a specific author."
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: "Username of the author"
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "A JSON response containing the list of comments by the author"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: "ID del comentario"
+                      example: 1
+                    text:
+                      type: string
+                      description: "Contenido del comentario"
+                      example: "Este es un comentario de ejemplo"
+                    author:
+                      type: string
+                      description: "Autor del comentario"
+                      example: "username"
+                    submission_title:
+                      type: string
+                      description: "Título de la submission"
+                      example: "Example submission"
+                    time_ago:
+                      type: string
+                      description: "Tiempo que ha pasado desde la creación del comentario"
+                      example: "19 hours ago"
+                    has_voted:
+                      type: boolean
+                      description: "Indica si el usuario ha votado en el comentario"
+                      example: false
+        '404':
+          description: "No encontrado, el autor no existe."
+        '401':
+          description: "No autorizado, se requiere autenticación para acceder al recurso."
+
+  /api/author/{username}/profile:
+    get:
+      summary: "Retrieve author profile"
+      description: "API endpoint to retrieve the profile of a specific author."
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: "Username of the author"
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "A JSON response containing the profile of the author"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                    description: "Nombre de usuario del autor"
+                    example: "username"
+                  karma:
+                    type: integer
+                    description: "Karma del autor"
+                    example: 100
+                  about:
+                    type: string
+                    description: "Descripción del autor"
+                    example: "This is an example about section."
+                  created_at:
+                    type: string
+                    format: date-time
+                    description: "Fecha de creación del perfil"
+                    example: "2023-10-01T12:34:56Z"
+        '404':
+          description: "No encontrado, el autor no existe."
+        '401':
+          description: "No autorizado, se requiere autenticación para acceder al recurso."
+
+  /api/author/{username}/favorite_submissions:
+    get:
+      summary: "Retrieve favorite submissions of an author"
+      description: "API endpoint to retrieve all favorite submissions of a specific author."
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: "Username of the author"
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "Successfully retrieved favorite submissions"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: "ID de la submission"
+                      example: 1
+                    title:
+                      type: string
+                      description: "Título de la submission"
+                      example: "Example submission"
+                    url:
+                      type: string
+                      description: "URL original de la submission"
+                      example: "https://example.com"
+                    shortened_url:
+                      type: string
+                      description: "URL acortada de la submission"
+                      example: "example.com"
+                    text:
+                      type: string
+                      description: "Texto de la submission"
+                      example: "Este es un texto de ejemplo"
+                    author:
+                      type: string
+                      description: "Autor de la submission"
+                      example: "username"
+                    time_ago:
+                      type: string
+                      description: "Tiempo transcurrido desde la creación"
+                      example: "2 hours ago"
+                    num_comments:
+                      type: integer
+                      description: "Número total de comentarios"
+                      example: 5
+                    has_voted:
+                      type: boolean
+                      description: "Indica si el usuario autenticado ha votado"
+                      example: true
+        '404':
+          description: "Author not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    description: "Mensaje de error"
+                    example: "Not found."
+        '401':
+          description: "No autorizado, se requiere autenticación para acceder al recurso."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    description: "Mensaje de error"
+                    example: "Authentication credentials were not provided."
+
+  /api/author/{username}/favorite_comments:
+    get:
+      summary: "Retrieve favorite comments of an author"
+      description: "API endpoint to retrieve all favorite comments of a specific author."
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: "Username of the author"
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "Successfully retrieved favorite comments"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: "ID del comentario"
+                      example: 1
+                    content:
+                      type: string
+                      description: "Contenido del comentario"
+                      example: "Este es un comentario de ejemplo"
+                    author:
+                      type: string
+                      description: "Autor del comentario"
+                      example: "username"
+                    submission:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: "ID de la submission asociada"
+                          example: 1
+                        title:
+                          type: string
+                          description: "Título de la submission asociada"
+                          example: "Example submission"
+                    created_at:
+                      type: string
+                      format: date-time
+                      description: "Fecha de creación del comentario"
+                      example: "2023-10-01T12:34:56Z"
+        '404':
+          description: "Author not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    description: "Mensaje de error"
+                    example: "Not found."
+        '401':
+          description: "No autorizado, se requiere autenticación para acceder al recurso."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    description: "Mensaje de error"
+                    example: "Authentication credentials were not provided."
+  /api/comments:
+    get:
+      summary: "Retrieve all comments"
+      description: "API endpoint to retrieve all comments."
+      responses:
+        '200':
+          description: "A JSON response containing the list of all comments"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: "ID del comentario"
+                      example: 1
+                    text:
+                      type: string
+                      description: "Contenido del comentario"
+                      example: "Este es un comentario de ejemplo"
+                    author:
+                      type: string
+                      description: "Autor del comentario"
+                      example: "username"
+                    submission_title:
+                      type: string
+                      description: "Título de la submission"
+                      example: "Example submission"
+                    time_ago:
+                      type: string
+                      description: "Tiempo que ha pasado desde la creación del comentario"
+                      example: "19 hours ago"
+                    has_voted:
+                      type: boolean
+                      description: "Indica si el usuario ha votado en el comentario"
+                      example: false
+        '401':
+          description: "No autorizado, se requiere autenticación para acceder al recurso."
+  
+  /api/comments/{pk}:
+    get:
+      summary: "Retrieve a specific comment and its submission"
+      description: "API endpoint to retrieve a specific comment and its associated submission."
+      parameters:
+        - name: pk
+          in: path
+          required: true
+          description: "Primary key of the comment"
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "A JSON response containing the comment and its submission"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  submission:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: "ID de la submission"
+                        example: 1
+                      title:
+                        type: string
+                        description: "Título de la submission"
+                        example: "Example submission"
+                  comment:
+                    type: object
+                    description: "El comentario y sus respuestas anidadas"
+        '404':
+          description: "No encontrado, el comentario no existe."
+        '401':
+          description: "No autorizado, se requiere autenticación para acceder al recurso."
+  
+    post:
+      summary: "Reply to a specific comment"
+      description: "API endpoint to reply to a specific comment."
+      security:
+        - ApiKeyAuth: []  # Este endpoint requiere la API Key para acceder
+      parameters:
+        - name: pk
+          in: path
+          required: true
+          description: "Primary key of the comment"
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                  description: "Contenido de la respuesta"
+                  example: "Este es un comentario de respuesta"
+      responses:
+        '201':
+          description: "Respuesta creada exitosamente"
+          content:
+            application/json:
+              schema:
+                type: object
+                description: "El árbol de comentarios actualizado"
+        '400':
+          description: "Solicitud incorrecta, datos no válidos."
+        '404':
+          description: "No encontrado, el comentario no existe."
+        '401':
+          description: "No autorizado, se requiere autenticación para acceder al recurso."
+  
+    delete:
+      summary: "Delete a specific comment"
+      description: "API endpoint to delete a specific comment."
+      security:
+        - ApiKeyAuth: []  # Este endpoint requiere la API Key para acceder
+      parameters:
+        - name: pk
+          in: path
+          required: true
+          description: "Primary key of the comment"
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: "Comentario eliminado exitosamente"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Mensaje de éxito"
+                    example: "Comentario eliminado exitosamente"
+        '403':
+          description: "No tienes permiso para eliminar este comentario."
+        '404':
+          description: "No encontrado, el comentario no existe."
+        '401':
+          description: "No autorizado, se requiere autenticación para acceder al recurso."
+
+  /api/comments/{pk}/reply:
+    post:
+      summary: "Reply to a specific comment"
+      description: "API endpoint to reply to a specific comment."
+      security:
+        - ApiKeyAuth: []  # Este endpoint requiere la API Key para acceder
+      parameters:
+        - name: pk
+          in: path
+          required: true
+          description: "Primary key of the comment"
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                  description: "Contenido de la respuesta"
+                  example: "Este es un comentario de respuesta"
+      responses:
+        '201':
+          description: "Respuesta creada exitosamente"
+          content:
+            application/json:
+              schema:
+                type: object
+                description: "El árbol de comentarios actualizado"
+        '400':
+          description: "Solicitud incorrecta, datos no válidos."
+        '404':
+          description: "No encontrado, el comentario no existe."
+        '401':
+          description: "No autorizado, se requiere autenticación para acceder al recurso."
+
+  /api/comments/{pk}/edit:
+    put:
+      summary: "Edit a specific comment"
+      description: "API endpoint to edit a specific comment."
+      security:
+        - ApiKeyAuth: []  # Este endpoint requiere la API Key para acceder
+      parameters:
+        - name: pk
+          in: path
+          required: true
+          description: "Primary key of the comment"
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                  description: "Contenido del comentario"
+                  example: "Este es un comentario editado"
+      responses:
+        '200':
+          description: "Comentario actualizado exitosamente"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Mensaje de éxito"
+                    example: "Comentario actualizado exitosamente"
+                  comment:
+                    type: object
+                    description: "El comentario actualizado"
+        '400':
+          description: "Solicitud incorrecta, datos no válidos."
+        '403':
+          description: "No tienes permiso para editar este comentario."
+        '404':
+          description: "No encontrado, el comentario no existe."
+        '401':
+          description: "No autorizado, se requiere autenticación para acceder al recurso."
+
+
+  /api/comments/{comment_id}/vote:
+    post:
+      summary: "Vote for a comment"
+      description: "API endpoint to vote for a specific comment."
+      security:
+        - ApiKeyAuth: []  # Este endpoint requiere la API Key para acceder
+      parameters:
+        - name: comment_id
+          in: path
+          required: true
+          description: "ID of the comment to vote for"
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "A JSON response containing the updated comment and its points"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  points:
+                    type: integer
+                    description: "Updated points of the comment"
+                    example: 10
+                  comment:
+                    type: object
+                    description: "The updated comment"
+                    properties:
+                      id:
+                        type: integer
+                        description: "ID del comentario"
+                        example: 1
+                      text:
+                        type: string
+                        description: "Contenido del comentario"
+                        example: "Este es un comentario de ejemplo"
+                      author:
+                        type: string
+                        description: "Autor del comentario"
+                        example: "username"
+                      submission_title:
+                        type: string
+                        description: "Título de la submission"
+                        example: "Example submission"
+                      time_ago:
+                        type: string
+                        description: "Tiempo que ha pasado desde la creación del comentario"
+                        example: "19 hours ago"
+                      has_voted:
+                        type: boolean
+                        description: "Indica si el usuario ha votado en el comentario"
+                        example: true
+        '400':
+          description: "Solicitud incorrecta, datos no válidos."
+        '403':
+          description: "No tienes permiso para votar en tu propio comentario."
+        '404':
+          description: "No encontrado, el comentario no existe."
+        '401':
+          description: "No autorizado, se requiere autenticación para acceder al recurso."
+  
+    delete:
+      summary: "Remove vote from a comment"
+      description: "API endpoint to remove your vote from a specific comment."
+      security:
+        - ApiKeyAuth: []  # Este endpoint requiere la API Key para acceder
+      parameters:
+        - name: comment_id
+          in: path
+          required: true
+          description: "ID of the comment to remove the vote from"
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "A JSON response containing the updated comment and its points"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  points:
+                    type: integer
+                    description: "Updated points of the comment"
+                    example: 9
+                  comment:
+                    type: object
+                    description: "The updated comment"
+                    properties:
+                      id:
+                        type: integer
+                        description: "ID del comentario"
+                        example: 1
+                      text:
+                        type: string
+                        description: "Contenido del comentario"
+                        example: "Este es un comentario de ejemplo"
+                      author:
+                        type: string
+                        description: "Autor del comentario"
+                        example: "username"
+                      submission_title:
+                        type: string
+                        description: "Título de la submission"
+                        example: "Example submission"
+                      time_ago:
+                        type: string
+                        description: "Tiempo que ha pasado desde la creación del comentario"
+                        example: "19 hours ago"
+                      has_voted:
+                        type: boolean
+                        description: "Indica si el usuario ha votado en el comentario"
+                        example: false
+        '400':
+          description: "Solicitud incorrecta, datos no válidos."
+        '404':
+          description: "No encontrado, el comentario no existe."
+        '401':
+          description: "No autorizado, se requiere autenticación para acceder al recurso."
+
+
+  /api/comments/{comment_id}/favorite:
+    post:
+      summary: "Add a comment to favorites"
+      description: "API endpoint to add a specific comment to the authenticated user's favorites."
+      security:
+        - ApiKeyAuth: []  # Este endpoint requiere la API Key para acceder
+      parameters:
+        - name: comment_id
+          in: path
+          required: true
+          description: "ID of the comment to add to favorites"
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "A JSON response containing the updated comment and its favorite status"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: "Status of the favorite action"
+                    example: "Comment added to favorites"
+                  comment:
+                    type: object
+                    description: "The updated comment"
+                    properties:
+                      id:
+                        type: integer
+                        description: "ID del comentario"
+                        example: 1
+                      text:
+                        type: string
+                        description: "Contenido del comentario"
+                        example: "Este es un comentario de ejemplo"
+                      author:
+                        type: string
+                        description: "Autor del comentario"
+                        example: "username"
+                      submission_title:
+                        type: string
+                        description: "Título de la submission"
+                        example: "Example submission"
+                      time_ago:
+                        type: string
+                        description: "Tiempo que ha pasado desde la creación del comentario"
+                        example: "19 hours ago"
+                      has_voted:
+                        type: boolean
+                        description: "Indica si el usuario ha votado en el comentario"
+                        example: false
+        '400':
+          description: "Solicitud incorrecta, datos no válidos."
+        '404':
+          description: "No encontrado, el comentario no existe."
+        '401':
+          description: "No autorizado, se requiere autenticación para acceder al recurso."
+          
+    delete:
+      summary: "Remove a comment from favorites"
+      description: "API endpoint to remove a specific comment from the authenticated user's favorites."
+      security:
+        - ApiKeyAuth: []  # Este endpoint requiere la API Key para acceder
+      parameters:
+        - name: comment_id
+          in: path
+          required: true
+          description: "ID of the comment to remove from favorites"
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "A JSON response containing the updated comment and its favorite status"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: "Status of the favorite action"
+                    example: "Comment removed from favorites"
+                  comment:
+                    type: object
+                    description: "The updated comment"
+                    properties:
+                      id:
+                        type: integer
+                        description: "ID del comentario"
+                        example: 1
+                      text:
+                        type: string
+                        description: "Contenido del comentario"
+                        example: "Este es un comentario de ejemplo"
+                      author:
+                        type: string
+                        description: "Autor del comentario"
+                        example: "username"
+                      submission_title:
+                        type: string
+                        description: "Título de la submission"
+                        example: "Example submission"
+                      time_ago:
+                        type: string
+                        description: "Tiempo que ha pasado desde la creación del comentario"
+                        example: "19 hours ago"
+                      has_voted:
+                        type: boolean
+                        description: "Indica si el usuario ha votado en el comentario"
+                        example: false
+        '400':
+          description: "Solicitud incorrecta, datos no válidos."
+        '404':
+          description: "No encontrado, el comentario no existe."
+        '401':
+          description: "No autorizado, se requiere autenticación para acceder al recurso."
+
+  # Corrección para el endpoint /api/profile
+  /api/profile:
+    get:
+      summary: "Retrieve user profile"
+      description: "API endpoint to retrieve the authenticated user's profile information."
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: "A JSON response containing the user profile information"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: "ID del perfil"
+                    example: 1
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: "ID del usuario"
+                        example: 1
+                      username:
+                        type: string
+                        description: "Nombre de usuario"
+                        example: "john_doe"
+                  about:
+                    type: string
+                    description: "Descripción del perfil del usuario"
+                    example: "Desarrollador full-stack"
+                  karma:
+                    type: integer
+                    description: "Puntos de karma del usuario"
+                    example: 150
+                  created_at:
+                    type: string
+                    format: date-time
+                    description: "Fecha de creación del perfil"
+                    example: "2023-10-01T12:34:56Z"
+                  image_url:
+                    type: string
+                    description: "URL de la imagen de perfil"
+                    example: "https://example.com/profile.jpg"
+                  banner_url:
+                    type: string
+                    description: "URL de la imagen de banner"
+                    example: "https://example.com/banner.jpg"
+        '401':
+          description: "No autorizado, se requiere autenticación para acceder al recurso."
+    post:
+      summary: "Update user profile"
+      description: "API endpoint to update the authenticated user's profile information, including the 'about' field, profile image, and banner."
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                about:
+                  type: string
+                  description: "Nueva descripción del perfil"
+                  example: "Desarrollador fullstack con experiencia en Django y React"
+                imagen:
+                  type: string
+                  format: binary
+                  description: "Archivo de imagen para actualizar la imagen de perfil"
+                banner:
+                  type: string
+                  format: binary
+                  description: "Archivo de imagen para actualizar el banner del perfil"
+      responses:
+        '200':
+          description: "Perfil actualizado exitosamente"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Mensaje de éxito"
+                    example: "Perfil actualizado exitosamente"
+                  updated_fields:
+                    type: array
+                    items:
+                      type: string
+                    description: "Lista de campos actualizados"
+                    example: ["about", "imagen"]
+                  profile:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: "ID del perfil"
+                        example: 1
+                      user:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            description: "ID del usuario"
+                            example: 1
+                          username:
+                            type: string
+                            description: "Nombre de usuario"
+                            example: "john_doe"
+                      about:
+                        type: string
+                        description: "Nueva descripción del perfil"
+                        example: "Desarrollador fullstack con experiencia en Django y React"
+                      karma:
+                        type: integer
+                        description: "Puntos de karma del usuario"
+                        example: 150
+                      created_at:
+                        type: string
+                        format: date-time
+                        description: "Fecha de creación del perfil"
+                        example: "2023-10-01T12:34:56Z"
+                      image_url:
+                        type: string
+                        description: "URL de la imagen de perfil"
+                        example: "https://s3.amazonaws.com/bucket/profiles/username_profile_123456.jpg"
+                      banner_url:
+                        type: string
+                        description: "URL del banner del perfil"
+                        example: "https://s3.amazonaws.com/bucket/banners/username_banner_123456.jpg"
+        '400':
+          description: "Error en los datos proporcionados"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Mensaje de error"
+                    example: "No se proporcionó imagen o banner"
+        '401':
+          description: "No autorizado"
+
+    
+  /api/profile/media/{media_type}:
+    delete:
+      summary: "Delete profile media (image or banner)"
+      description: "Remove the custom profile image or banner and restore the default one."
+      parameters:
+        - name: "media_type"
+          in: "path"
+          description: "The type of media to delete (either 'image' or 'banner')."
+          required: true
+          schema:
+            type: string
+            enum:
+              - "image"
+              - "banner"
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: "Media deleted successfully or no custom media to delete"
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        description: "Success message"
+                        example: "Image deleted successfully"  # or "Banner deleted successfully"
+                      profile:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            description: "Profile ID"
+                            example: 1
+                          imagen_perfil_url:
+                            type: string
+                            description: "Default profile image URL (if media type is 'image')"
+                            example: "https://example.com/default-profile.jpg"
+                          banner_perfil_url:
+                            type: string
+                            description: "Default banner URL (if media type is 'banner')"
+                            example: "https://example.com/default-banner.jpg"
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        description: "Information message"
+                        example: "No custom image to delete"  # or "No custom banner to delete"
+        '400':
+          description: "Invalid media type provided"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Error message"
+                    example: "Invalid media type"
+        '404':
+          description: "No custom media found to delete"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Error message"
+                    example: "No custom image or banner to delete"
+        '401':
+          description: "Unauthorized - Authentication required"

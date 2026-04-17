@@ -1,0 +1,128 @@
+/* src/styles/SubmissionDetail.css */
+.main-container {
+    width: 95%;
+    max-width: 1200px;
+    margin: 0 auto;
+    margin-top: 80px;
+    background-color: #f6f6ef;
+    padding: 20px;
+    margin-left: 20px;
+}
+
+.submission-container {
+    background-color: white;
+    padding: 20px;
+    margin: 20px 0;
+    border: 1px solid #e2e2e2;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.submission-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.vote-button {
+    background-color: #ff6600;
+    color: white;
+    border: none;
+    padding: 3px 8px;
+    font-size: 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-right: 5px;
+}
+
+.vote-button:hover {
+    background-color: #e65c00;
+}
+
+.vote-button.voted {
+    background-color: #444;
+}
+
+.author-asterisk {
+    color: #ff6600;
+    font-weight: bold;
+    margin-right: 5px;
+    font-size: 20px;
+}
+
+.submission-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.submission-url {
+    color: #828282;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.submission-text {
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+.submission-info {
+    font-size: 12px;
+    color: #828282;
+}
+
+.author-link {
+    color: #000;
+    text-decoration: none;
+}
+
+.author-link:hover {
+    text-decoration: underline;
+}
+
+.comments-section {
+    margin-top: 30px;
+}
+
+.comments-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.action-link {
+    color: #ff6600;
+    text-decoration: none;
+    margin-right: 10px;
+}
+
+.action-link:hover {
+    text-decoration: underline;
+}
+
+.separator {
+    color: #666;
+    margin: 0 5px;
+}
+
+.loading,
+.error {
+    text-align: center;
+    margin-top: 20px;
+    color: #ff6600;
+    font-size: 16px;
+}
+
+.time-ago {
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.time-ago:hover {
+    text-decoration: underline;
+    color: #ff6600;
+}

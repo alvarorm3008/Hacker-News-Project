@@ -1,0 +1,297 @@
+{% load socialaccount %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hacker News - Comments</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f6f6ef;
+        }
+        /* Estilos generales para el contenedor principal */
+        .main-container {
+            width: 95%;
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #f6f6ef;
+        }
+        /* Estilos para la cabecera */
+        .header {
+            background-color: #ff6600;
+            padding: 5px 0;
+            border-bottom: 1px solid #e2e2e2;
+            display: flex; /* Usamos flexbox para alinear los elementos en una fila */
+            justify-content: space-between; /* Distribuye el espacio entre los elementos */
+            align-items: center; /* Centra verticalmente los elementos */
+        }
+        .header .pagetop {
+            color: white;
+            padding: 0 10px;
+        }
+        .header a {
+            color: white;
+            margin-right: 10px;
+            text-decoration: none;
+        }
+        .header .hnname a {
+            font-weight: bold;
+            color: white;
+        }
+        .header .search-form {
+            margin-left: 0px; /* Espacio entre el bloque de navegación y el buscador */
+        }
+        .header .search-form input {
+            padding: 5px;
+            font-size: 14px;
+            border-radius: 4px;
+        }
+        .header .search-form button {
+            padding: 6px 12px;
+            font-size: 14px;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .header .user-info a {
+            color: white;
+            text-decoration: none;
+        }
+        /* Estilos para el contenedor de contenido */
+        .container {
+            background-color: white;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid #e2e2e2;
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .news-item a {
+            color: #000;
+            text-decoration: none;
+        }
+        .news-item a:hover {
+            text-decoration: underline;
+        }
+        .orange-asterisk {
+            color: #ff6600;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        .points, .author {
+            color: #828282;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        /* Flexbox para alinear los campos en el formulario */
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            margin-top: 10px;
+        }
+        .form-group label {
+            margin-right: 10px;
+        }
+        .form-group input[type="text"] {
+            width: 60%; 
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .container button {
+            background-color: #ff6600;
+            color: white;
+            border: none;
+            padding: 3px 8px;
+            font-size: 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-right: 5px;
+        }
+        .container button:hover {
+            background-color: #e55b00;
+        }
+        .text {
+            margin-top: 10px;
+        }  
+        /* Estilo de la clase .comment */
+        .comment {
+            color: #000; /* Color negro para el texto del comentario */
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 15px; /* Espacio extra debajo de cada comentario */
+        }
+
+        /* Estilo para enlaces dentro de .comment para que aparezcan en negro */
+        .comment a {
+            color: #000; /* Color negro para los enlaces */
+            text-decoration: none;
+        }
+
+        /* Enlaces dentro de comentarios que cambian de color al pasar el cursor */
+        .comment a:hover {
+            text-decoration: underline;
+        }
+
+        /* Estilo para el separador | dentro de comentarios en gris */
+        .comment .separator {
+            color: #828282; /* Color gris para los separadores */
+        }
+
+        /* Espacio entre el texto del comentario y el enlace de respuesta */
+        .comment .text {
+            margin-bottom: 10px; /* Espacio debajo del comentario */
+        }
+
+        .comment .reply-link {
+            margin-top: 5px; /* Espacio encima del enlace de respuesta */
+            display: block;
+            font-weight: bold;
+        }
+     
+        .time {
+            color: #828282;
+            font-size: 12px;
+        }
+        /* Estilo para el botón de votación */
+        .vote-button {
+            background-color: #ff6600;
+            color: white;
+            border: none;
+            padding: 3px 8px;
+            font-size: 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-right: 5px;
+        }        
+    </style>
+</head>
+<body>
+
+    <!-- Contenedor principal que engloba la cabecera y el contenido -->
+    <div class="main-container">
+        <!-- Cabecera -->
+        <div class="header">
+            <span class="pagetop">
+                <b class="hnname">
+                    <a href="/news">Hacker News</a>
+                </b>
+                <a href="/newest">new</a>
+                <a href="/threads">threads</a>
+                <a href="/comments">comments</a>
+                <a href="/ask">ask</a>
+                <a href="/submissions" rel="nofollow">submit</a>
+            </span>
+
+            <!-- Buscador -->
+            <span class="search-form">
+                <form method="get" action="{% url 'newest' %}">
+                    <input type="text" name="query" placeholder="Busca por título" value="{{ query }}">
+                    <button type="submit">Buscar</button>
+                </form>
+            </span>
+
+            <!-- Usuario -->
+            <span class="user-info">
+                {% if user.is_authenticated %}
+                <div class="user-logout-container">
+                    <a href="{% url 'accounts:profile' %}">{{ user.username }} ({{ karma }})</a>
+                    <a href="#" onclick="document.getElementById('logout-form').submit(); return false;">Logout</a>
+                    <form id="logout-form" method="post" action="{% url 'account_logout' %}" style="display: none;">
+                        {% csrf_token %}
+                    </form>
+                </div>
+                {% else %}
+                <a href="{% provider_login_url 'google' %}">Login with Google</a>
+                {% endif %}
+            </span>
+        </div>
+
+        <div class="container">
+            <div class="news-item">
+                <div class="author">
+                    {% if user.is_authenticated and user == comment.author %} 
+                    <span class="orange-asterisk">*</span>
+                    {% else %}
+                        {% if user.is_authenticated %}
+                            <form action="{% url 'vote_comment' comment.id %}" method="post" style="display: inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="next" value="{{ request.path }}">
+                                {% if comment.has_voted %}
+                                    <button type="submit" class="vote-button">Unvote</button>
+                                {% else %}
+                                    <button type="submit" class="vote-button">Vote</button>
+                                {% endif %}
+                            </form>
+                        {% else %}
+                            <form action="{% provider_login_url 'google' %}" method="get" style="display: inline;">
+                                <button type="submit" class="vote-button">Vote</button>
+                            </form>
+                        {% endif %}
+                    {% endif %}
+                    <span class="points">{{ comment.points }} points</span>
+                    by <a href="{% url 'accounts:author_profile' comment.author.username %}">{{ comment.author.username }}</a>
+                    <a href="{% url 'comment_detail' pk=comment.pk %}">{{ time_ago }}</a>
+                    {% if user.is_authenticated and user == comment.author %}
+                        | <a href="{% url 'edit_comment' pk=comment.pk %}">edit</a>
+                        | <a href="{% url 'delete_comment' pk=comment.pk %}">delete</a>
+                    {% endif %}
+                    {% if user in comment.favorite_by.all %}
+                        | <a href="{% url 'favorite_comment' comment.id %}">unfavorite</a>
+                    {% else %}
+                        {% if user.is_authenticated %}
+                            | <a href="{% url 'favorite_comment' comment.id %}">favorite</a>
+                        {% else %}
+                            | <a href="{% provider_login_url 'google' %}">favorite</a>               
+                        {% endif %}
+                    {% endif %}
+                    <span class="text-gray">| on:</span>
+                    <a href="{% url 'submission_detail' pk=comment.submission.pk %}">{{ comment.submission.title }}</a>
+                </div>
+                <div class="text">
+                    {{ comment.text }}
+                </div>
+            </div>
+
+            {% if user.is_authenticated and user != comment.author %}
+            <h2>Add a Reply</h2>
+            <form method="post" class="reply-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    {{ form.non_field_errors }}
+                    {{ form.text.errors }}
+                    <textarea name="text" rows="4" cols="50" class="reply-textarea">{{ form.text.value|default_if_none:'' }}</textarea>
+                </div>
+                <button type="submit">Reply</button>
+            </form>
+            {% elif not user.is_authenticated %}
+                <h2>Add a Reply</h2>
+                <p>You need to be logged in to add a reply. <a href="{% provider_login_url 'google' %}">Login with Google</a></p>
+            {% endif %}
+
+            <h2>Replies</h2>
+            <ul>
+                {% for reply in replies %}
+                    {% include "comments/comment.html" with comment=reply %}
+                {% empty %}
+                    <li>No replies yet.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <script>
+        function confirmLogout() {
+            if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
+                document.getElementById('logout-form').submit();
+            }
+        }
+    </script>
+
+</body>
+</html>

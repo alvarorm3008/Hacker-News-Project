@@ -1,0 +1,90 @@
+/* src/styles/common.css */
+.main-container {
+    width: 95%;
+    max-width: 1200px;
+    margin: 0 auto;
+    margin-top: 80px;
+    background-color: #f6f6ef;
+    padding: 20px;
+}
+
+.content-container {
+    background-color: white;
+    padding: 20px;
+    margin: 20px 0;
+    border: 1px solid #e2e2e2;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.vote-button {
+    background-color: #ff6600;
+    color: white;
+    border: none;
+    padding: 3px 8px;
+    font-size: 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-right: 5px;
+}
+
+.vote-button:hover {
+    background-color: #e65c00;
+}
+
+.vote-button.voted {
+    background-color: #444;
+}
+
+.author-link {
+    color: #000;
+    text-decoration: none;
+}
+
+.author-link:hover {
+    text-decoration: underline;
+}
+
+.points {
+    font-weight: bold;
+    color: #000;
+}
+
+.separator {
+    color: #666;
+    margin: 0 5px;
+}
+
+.orange-asterisk {
+    color: #ff6600;
+    font-weight: bold;
+    margin-right: 5px;
+    font-size: 20px;
+}
+
+.loading,
+.error {
+    text-align: center;
+    margin-top: 20px;
+    color: #ff6600;
+    font-size: 16px;
+}
+
+.action-button {
+    background-color: #ff6600;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 5px;
+}
+
+.action-button:hover {
+    background-color: #e65c00;
+}
+
+.action-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}

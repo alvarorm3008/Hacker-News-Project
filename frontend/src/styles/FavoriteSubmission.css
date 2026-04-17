@@ -1,0 +1,48 @@
+.main-container {
+  width: 95%;
+  max-width: 1200px;
+  margin-top: 100px; /* Afegeix espai per sota de la capçalera */
+  background-color: #f6f6ef;
+}
+
+.container {
+  background-color: white;
+  padding: 20px;
+  margin: 20px 0;
+  border: 1px solid #e2e2e2;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.news-item a {
+  color: #000;
+  text-decoration: none;
+}
+
+.news-item a:hover {
+  text-decoration: underline;
+}
+
+.orange-asterisk {
+  color: #ff6600;
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.points, .author {
+  color: #828282;
+  font-size: 12px;
+}
+
+.no-submissions {
+  margin-top: 10px;
+}
+
+.author {
+  font-size: 12px;
+}
+
+.time {
+  color: #828282;
+  font-size: 12px;
+}
