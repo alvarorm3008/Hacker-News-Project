@@ -1,68 +1,80 @@
-# Backend — ASW (Django + DRF)
+# Hacker News — Backend API
 
-API y aplicación servidor del proyecto tipo **Hacker News**: noticias, envíos, comentarios, hilos, votos y cuentas. Expone una **API REST** bajo el prefijo `/api/` y documentación OpenAPI (Swagger/ReDoc).
+API REST y aplicación servidor del clon tipo **Hacker News**: noticias, envíos, comentarios, hilos, votos y cuentas. El prefijo de la API es **`/api/`**.
 
-**Proyecto en grupo de 6** (ASW). Miembros: Carla Edo Garzon, Alvaro Rodriguez Martinez, Laia Belaustegui Colilaf, Carla Lopez Campos — *añade aquí los nombres 5 y 6*.
+Este código vive en el monorepo bajo la carpeta **`backend/`**. Desde la raíz del repositorio, entra aquí antes de ejecutar `manage.py`.
 
-## Stack
+Stack principal: **Django 5.x**, **Django REST Framework**, **django-cors-headers**, **django-allauth** (Google opcional), **drf-yasg** (OpenAPI), almacenamiento en **S3** opcional vía `django-storages`; en local, sin variables AWS, se usan carpetas locales para estáticos y media.
 
-- **Django** 5.x
-- **Django REST Framework**
-- **django-cors-headers** (CORS para el frontend)
-- **django-allauth** (login social, p. ej. Google)
-- **drf-yasg** (Swagger / ReDoc)
-- **Almacenamiento:** configuración preparada para **S3** (archivos estáticos/media) en despliegue
-- Base de datos por defecto: **SQLite** (`db.sqlite3`) en desarrollo
+---
+
+## Contenido
+
+- [Requisitos](#requisitos)
+- [Puesta en marcha en local](#puesta-en-marcha-en-local)
+- [Variables de entorno](#variables-de-entorno)
+- [Documentación de la API](#documentación-de-la-api)
+- [Estructura del proyecto](#estructura-del-proyecto)
+
+---
 
 ## Requisitos
 
-- **Python** 3.11+ (recomendado)
-- `pip` y entorno virtual (`venv`)
+| Entorno | Versión recomendada |
+|--------|---------------------|
+| Python | 3.11+ |
+| pip / venv | Incluidos con Python |
 
-## Instalación y arranque local
+---
 
-```bash
-cd backend
-python3 -m venv venv
-source venv/bin/activate   # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-python manage.py migrate
-python manage.py runserver
-```
+## Puesta en marcha en local
 
-El servidor queda habitualmente en http://127.0.0.1:8000/
+1. Desde la raíz del monorepo:
 
-- **API:** http://127.0.0.1:8000/api/
-- **Swagger:** http://127.0.0.1:8000/swagger/
-- **ReDoc:** http://127.0.0.1:8000/redoc/
+   ```bash
+   cd backend
+   python3 -m venv venv
+   source venv/bin/activate
+   pip install -r requirements.txt
+   ```
 
-## Autenticación API
+2. Crea `.env` a partir de `.env.example` y rellena lo necesario (OAuth, AWS, etc. solo si los usas).
 
-La API usa autenticación personalizada por **API key** (cabecera `Authorization`). Consulta la implementación en la app `accounts` y la configuración `REST_FRAMEWORK` en `ASWproject/settings.py`.
+3. Migraciones y servidor:
 
-## CORS
+   ```bash
+   python manage.py migrate
+   python manage.py runserver
+   ```
 
-En desarrollo suele estar `CORS_ALLOW_ALL_ORIGINS = True` para facilitar el frontend en otro puerto. En producción conviene restringir orígenes concretos.
+- API: http://127.0.0.1:8000/api/
+- Swagger: http://127.0.0.1:8000/swagger/
+- ReDoc: http://127.0.0.1:8000/redoc/
 
-## Archivo OpenAPI
+---
 
-En la raíz del backend hay un `api.yaml` de referencia; la documentación interactiva la sirve **drf-yasg** en `/swagger/` y `/redoc/`.
+## Variables de entorno
 
-## Despliegue (referencia)
+El fichero **`backend/.env`** (no versionado) se carga automáticamente. Nombres y descripción: **`.env.example`**.
 
-Ejemplo anterior: https://aswproject.onrender.com  
+Incluye, entre otras: `DJANGO_SECRET_KEY`, `DJANGO_DEBUG`, `DJANGO_ALLOWED_HOSTS`, credenciales **Google OAuth** (`GOOGLE_OAUTH_*`) y, si aplica, **AWS** para S3.
 
-En producción se recomienda usar variables de entorno para `SECRET_KEY`, credenciales de AWS, OAuth de Google y base de datos, en lugar de valores fijados en código.
+---
 
-## Enlaces del proyecto
+## Documentación de la API
 
-- **Taiga:** https://tree.taiga.io/project/carla172003-hn11a-asw-project
+Documentación interactiva con **drf-yasg**: **`/swagger/`** y **`/redoc/`**. Existe además un **`api.yaml`** en esta carpeta como referencia.
 
-## Apps Django principales
+La API REST usa autenticación por **API key** en la cabecera `Authorization` (ver app `accounts` y `REST_FRAMEWORK` en `ASWproject/settings.py`).
 
-| App | Rol |
-|-----|-----|
-| `api` | Rutas REST agregadas bajo `/api/` |
-| `news`, `newest`, `ask` | Vistas y flujos de listados |
-| `submissions`, `comments`, `threads` | Envíos, comentarios e hilos |
-| `accounts` | Usuarios, karma, adaptadores de auth |
+---
+
+## Estructura del proyecto
+
+| Ruta / app | Rol |
+|------------|-----|
+| `ASWproject/` | Settings, URLs raíz |
+| `api/` | Rutas REST bajo `/api/` |
+| `news/`, `newest/`, `ask/` | Listados y vistas relacionadas |
+| `submissions/`, `comments/`, `threads/` | Envíos, comentarios, hilos |
+| `accounts/` | Perfiles, karma, API keys, allauth |

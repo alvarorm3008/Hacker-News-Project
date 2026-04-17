@@ -1,13 +1,29 @@
-# Frontend — ASW (React + Vite)
+# Hacker News — Frontend (React + Vite)
 
-Interfaz web del clon tipo **Hacker News**: listados (news, newest, ask), envíos, comentarios, hilos y votos. Comunicación con el backend mediante **axios** y cabecera `Authorization` con la API key del usuario.
+SPA del clon tipo **Hacker News**: listados (news, newest, ask), envíos, comentarios, hilos y votos. Consume la API con **axios** y envía la **API key** en la cabecera `Authorization`.
 
-**Proyecto en grupo de 6** (ASW). Miembros: Carla Edo Garzon, Alvaro Rodriguez Martinez, Laia Belaustegui Colilaf, Carla Lopez Campos — *añade aquí los nombres 5 y 6*.
+Este código vive en el monorepo bajo la carpeta **`frontend/`**.
+
+---
+
+## Contenido
+
+- [Requisitos](#requisitos)
+- [Instalación](#instalación)
+- [Variables de entorno](#variables-de-entorno)
+- [Scripts](#scripts)
+- [Estructura](#estructura)
+
+---
 
 ## Requisitos
 
-- **Node.js** 18+ (recomendado LTS)
-- npm (incluido con Node)
+| Entorno | Versión recomendada |
+|--------|---------------------|
+| Node.js | 18+ (LTS) |
+| npm | Incluido con Node |
+
+---
 
 ## Instalación
 
@@ -16,14 +32,22 @@ cd frontend
 npm install
 ```
 
-## Variables y API
+Arranque en desarrollo:
 
-La URL base de la API está definida en `src/services/ApiService.jsx` (constante `API_URL`).
+```bash
+npm run dev
+```
 
-- **Producción / despliegue:** por defecto apunta a `https://aswproject.onrender.com/api`.
-- **Desarrollo local:** cambia `API_URL` a `http://127.0.0.1:8000/api` (o el puerto donde corra Django) mientras desarrollas.
+---
 
-Los perfiles de prueba y sus API keys están en `src/config/profiles.js`. En un entorno real conviene no versionar claves reales o cargarlas desde variables de entorno.
+## Variables de entorno
+
+Copia **`.env.example`** a **`.env.local`** (no lo subas al repositorio). Vite solo expone variables con prefijo **`VITE_`**.
+
+- **`VITE_API_URL`**: URL base de la API (por ejemplo `http://127.0.0.1:8000/api`). Si no se define, el cliente usa la URL de despliegue por defecto definida en código.
+- **`VITE_API_KEY_*`**: claves por perfil; se consumen en `src/config/profiles.js`.
+
+---
 
 ## Scripts
 
@@ -32,21 +56,15 @@ Los perfiles de prueba y sus API keys están en `src/config/profiles.js`. En un 
 | `npm run dev` | Servidor de desarrollo (Vite) |
 | `npm run build` | Build de producción en `dist/` |
 | `npm run preview` | Previsualiza el build |
-| `npm run start` | Sirve la carpeta `dist/` con `serve` (útil en despliegues tipo Render) |
+| `npm run start` | Sirve `dist/` con `serve` |
 | `npm run lint` | ESLint |
 
-## Despliegue (referencia)
+---
 
-Ejemplo anterior: https://aswfrontend.onrender.com  
+## Estructura
 
-Suele usarse `npm run build` y un comando estático tipo `npm run start` o hosting de `dist/` en nginx, Netlify, Vercel, etc.
-
-## Enlaces del proyecto
-
-- **Taiga:** https://tree.taiga.io/project/carla172003-hn11a-asw-project
-
-## Estructura principal
-
-- `src/components/` — pantallas y piezas de UI
-- `src/services/ApiService.jsx` — cliente HTTP hacia la API
-- `src/config/profiles.js` — perfiles / API keys para pruebas
+| Ruta | Rol |
+|------|-----|
+| `src/components/` | Pantallas y UI |
+| `src/services/ApiService.jsx` | Cliente HTTP |
+| `src/config/profiles.js` | Perfiles y API keys (desde env) |
