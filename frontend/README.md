@@ -1,38 +1,38 @@
 # Hacker News — Frontend (React + Vite)
 
-SPA del clon tipo **Hacker News**: listados (news, newest, ask), envíos, comentarios, hilos y votos. Consume la API con **axios** y envía la **API key** en la cabecera `Authorization`.
+SPA for the **Hacker News-style** clone: listings (`news`, `newest`, `ask`), submissions, comments, threads, and voting. It consumes the API with **axios** and sends the **API key** in the `Authorization` header.
 
-Este código vive en el monorepo bajo la carpeta **`frontend/`**.
+This code lives in the monorepo under **`frontend/`**.
 
 ---
 
-## Contenido
+## Contents
 
-- [Requisitos](#requisitos)
-- [Instalación](#instalación)
-- [Variables de entorno](#variables-de-entorno)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Environment Variables](#environment-variables)
 - [Scripts](#scripts)
-- [Estructura](#estructura)
+- [Structure](#structure)
 
 ---
 
-## Requisitos
+## Requirements
 
-| Entorno | Versión recomendada |
-|--------|---------------------|
+| Environment | Recommended Version |
+|-------------|---------------------|
 | Node.js | 18+ (LTS) |
-| npm | Incluido con Node |
+| npm | Included with Node |
 
 ---
 
-## Instalación
+## Installation
 
 ```bash
 cd frontend
 npm install
 ```
 
-Arranque en desarrollo:
+Start in development mode:
 
 ```bash
 npm run dev
@@ -40,31 +40,31 @@ npm run dev
 
 ---
 
-## Variables de entorno
+## Environment Variables
 
-Copia **`.env.example`** a **`.env.local`** (no lo subas al repositorio). Vite solo expone variables con prefijo **`VITE_`**.
+Copy **`.env.example`** to **`.env.local`** (do not commit it). Vite only exposes variables with the **`VITE_`** prefix.
 
-- **`VITE_API_URL`**: URL base de la API (por ejemplo `http://127.0.0.1:8000/api`). Si no se define, el cliente usa la URL de despliegue por defecto definida en código.
-- **`VITE_API_KEY_*`**: claves por perfil; se consumen en `src/config/profiles.js`.
+- **`VITE_API_URL`**: Base API URL (for example `http://127.0.0.1:8000/api`). If not defined, the client uses the default deployed URL defined in code.
+- **`VITE_API_KEY_*`**: profile keys consumed in `src/config/profiles.js`.
 
 ---
 
 ## Scripts
 
-| Comando | Descripción |
+| Command | Description |
 |---------|-------------|
-| `npm run dev` | Servidor de desarrollo (Vite) |
-| `npm run build` | Build de producción en `dist/` |
-| `npm run preview` | Previsualiza el build |
-| `npm run start` | Sirve `dist/` con `serve` |
+| `npm run dev` | Development server (Vite) |
+| `npm run build` | Production build in `dist/` |
+| `npm run preview` | Preview the production build |
+| `npm run start` | Serve `dist/` using `serve` |
 | `npm run lint` | ESLint |
 
 ---
 
-## Estructura
+## Structure
 
-| Ruta | Rol |
-|------|-----|
-| `src/components/` | Pantallas y UI |
-| `src/services/ApiService.jsx` | Cliente HTTP |
-| `src/config/profiles.js` | Perfiles y API keys (desde env) |
+| Path | Role |
+|------|------|
+| `src/components/` | Views and UI |
+| `src/services/ApiService.jsx` | HTTP client |
+| `src/config/profiles.js` | Profiles and API keys (from env) |

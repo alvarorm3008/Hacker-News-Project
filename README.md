@@ -1,20 +1,20 @@
 # Hacker News (ASW)
 
-Monorepo del proyecto tipo **Hacker News** para *Aplicacions i Serveis Web* (ASW): **API REST (Django)** y **SPA (React + Vite)** en un solo repositorio.
+Monorepo for a **Hacker News-style** project built for *Aplicacions i Serveis Web* (ASW): **REST API (Django)** and **SPA (React + Vite)** in a single repository.
 
-| Parte | Ruta | Descripción |
-|--------|------|-------------|
-| **Backend** | [`backend/`](backend/) | Django, DRF, SQLite (local), S3 opcional, Swagger/ReDoc |
+| Part | Path | Description |
+|------|------|-------------|
+| **Backend** | [`backend/`](backend/) | Django, DRF, local SQLite, optional S3, Swagger/ReDoc |
 | **Frontend** | [`frontend/`](frontend/) | React, Vite, axios |
 
-## Requisitos rápidos
+## Quick Requirements
 
 - **Backend:** Python 3.11+, `pip`, `venv`.
-- **Frontend:** Node.js 18+ y npm (ver [`frontend/README.md`](frontend/README.md)).
+- **Frontend:** Node.js 18+ and npm (see [`frontend/README.md`](frontend/README.md)).
 
-## Puesta en marcha
+## Getting Started
 
-### API (desde la raíz del repo)
+### API (from repository root)
 
 ```bash
 cd backend
@@ -28,7 +28,7 @@ python manage.py runserver
 
 Swagger: http://127.0.0.1:8000/swagger/
 
-Más detalle: [**backend/README.md**](backend/README.md).
+More details: [**backend/README.md**](backend/README.md).
 
 ### Frontend
 
@@ -39,13 +39,13 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Configura `VITE_API_URL` y las claves de perfil en `.env.local`. Más detalle: [**frontend/README.md**](frontend/README.md).
+Set `VITE_API_URL` and profile keys in `.env.local`. More details: [**frontend/README.md**](frontend/README.md).
 
-## Estructura del repositorio
+## Repository Structure
 
 ```text
 .
 ├── README.md
-├── backend/          # Proyecto Django (API + vistas HTML)
-└── frontend/           # Proyecto React (Vite)
+├── backend/            # Django project (API + HTML views)
+└── frontend/           # React project (Vite)
 ```
